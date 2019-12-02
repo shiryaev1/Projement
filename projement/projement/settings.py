@@ -20,7 +20,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'projects',
-
+    # 'auth',
     'crispy_forms',
 
     'django.contrib.admin',
@@ -46,7 +46,7 @@ ROOT_URLCONF = 'projement.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': ['projement/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

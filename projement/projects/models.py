@@ -23,14 +23,23 @@ class Project(models.Model):
     start_date = models.DateField('Project start date', blank=True, null=True)
     end_date = models.DateField('Project end date', blank=True, null=True)
 
-    estimated_design = models.PositiveSmallIntegerField('Estimated design hours')
-    actual_design = models.PositiveSmallIntegerField('Actual design hours', default=0)
+    estimated_design = models.DecimalField('Estimated design hours',
+                                           max_digits=4, decimal_places=2)
+    actual_design = models.DecimalField('Actual design hours', default=0,
+                                        max_digits=4, decimal_places=2)
 
-    estimated_development = models.PositiveSmallIntegerField('Estimated development hours')
-    actual_development = models.PositiveSmallIntegerField('Actual development hours', default=0)
+    estimated_development = models.DecimalField('Estimated development hours',
+                                                max_digits=4,
+                                                decimal_places=2)
+    actual_development = models.DecimalField('Actual development hours',
+                                             default=0, max_digits=4,
+                                             decimal_places=2)
 
-    estimated_testing = models.PositiveSmallIntegerField('Estimated testing hours')
-    actual_testing = models.PositiveSmallIntegerField('Actual testing hours', default=0)
+    estimated_testing = models.DecimalField('Estimated testing hours',
+                                            max_digits=4, decimal_places=2)
+    actual_testing = models.DecimalField('Actual testing hours',
+                                         default=0, max_digits=4,
+                                         decimal_places=2)
 
     def __str__(self):
         return self.title
