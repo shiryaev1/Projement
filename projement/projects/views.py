@@ -48,3 +48,5 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     success_url = reverse_lazy('dashboard')
+
+
