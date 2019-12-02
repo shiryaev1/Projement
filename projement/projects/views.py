@@ -2,6 +2,8 @@ import os
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls.base import reverse_lazy
 from django.utils.safestring import mark_safe
@@ -12,7 +14,7 @@ from operator import attrgetter
 from markdown import markdown
 from itertools import chain
 from projects.forms import ProjectForm, TagForm
-from projects.models import Project
+from projects.models import Project, Tag
 
 
 class AssignmentView(TemplateView):
@@ -64,3 +66,38 @@ class TagCreate(View):
             return redirect('tag_create_url')
         args = {'form': form}
         return render(request, 'projects/tag_create.html', args)
+
+
+class TagEditView(View):
+
+    template_name = 'projects/tag_edit.html'
+
+    def get(self, request, id):
+        try:
+            tag = Tag.objects.get(id=id)
+        except ObjectDoesNotExist:
+            raise Http404
+        form = TagForm(instance=tag)
+        args = {
+            'form': form,
+        }
+        return render(request, self.template_name, args)
+
+    def post(self, request, id):
+        try:
+            tag = Tag.objects.get(id=id)
+        except ObjectDoesNotExist:
+            return Http404
+        form = TagForm(request.POST, instance=tag)
+        if form.is_valid():
+            form.save()
+            return redirect('tag_create_url')
+        args = {
+            'form': form
+        }
+        return render(request, self.template_name, args)
+
+
+def tags_list_view(request):
+    tags = Tag.objects.all()
+    return render(request, 'projects/tags_list.html', {'tags': tags})

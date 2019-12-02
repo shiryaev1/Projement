@@ -98,8 +98,10 @@ class Project(models.Model):
 
 
 class Tag(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=50)
+
+    def get_update_url(self):
+        return reverse('tag-edit', kwargs={'id': self.id})
 
     def __str__(self):
         return self.title

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% for tag in tags %}
+        <p><a href="{{ tag.get_update_url }}">{{tag.title}}</a></p>
+    {% endfor %}
+</body>
+</html>
