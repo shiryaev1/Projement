@@ -7,10 +7,9 @@ from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
-from django.db.models import F
-
+from operator import attrgetter
 from markdown import markdown
-
+from itertools import chain
 from projects.forms import ProjectForm
 from projects.models import Project
 
@@ -33,15 +32,16 @@ class AssignmentView(TemplateView):
 
 class DashboardView(LoginRequiredMixin, ListView):
     model = Project
-    # ordering = (filtr,'-end_date',)
+    # ordering = ('-end_date',)
     context_object_name = 'projects'
     template_name = 'projects/dashboard.html'
 
     def get_queryset(self):
         projects = super().get_queryset()
-        # projects = projects.select_related('company')
-        filtr = Project.objects.filter(end_date__isnull=True)
-        projects = Project.objects.select_related('company').order_by('-end_date',)
+        projects_start = Project.objects.select_related('company').exclude(
+            end_date__isnull=False).order_by('-start_date')
+        projects_end = Project.objects.exclude(end_date__isnull=True).order_by('-end_date')
+        projects = list(chain(projects_start, projects_end))
 
         return projects
 
