@@ -103,6 +103,9 @@ class Tag(models.Model):
     def get_update_url(self):
         return reverse('tag-edit', kwargs={'id': self.id})
 
+    def get_delete_url(self):
+        return reverse('tag-delete', kwargs={'id': self.id})
+
     def __str__(self):
         return self.title
 

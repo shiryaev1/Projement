@@ -63,7 +63,7 @@ class TagCreate(View):
         form = TagForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('tag_create_url')
+            return redirect('tag-list')
         args = {'form': form}
         return render(request, 'projects/tag_create.html', args)
 
@@ -91,11 +91,23 @@ class TagEditView(View):
         form = TagForm(request.POST, instance=tag)
         if form.is_valid():
             form.save()
-            return redirect('tag_create_url')
+            return redirect('tag-list')
         args = {
             'form': form
         }
         return render(request, self.template_name, args)
+
+
+class TagDeleteView(View):
+    def get(self, request, id):
+        tag = Tag.objects.get(id=id)
+        args = {'tag': tag}
+        return render(request, 'projects/tag_delete.html', args)
+
+    def post(self, request, id):
+        tag = Tag.objects.get(id=id)
+        tag.delete()
+        return redirect('tag-list')
 
 
 def tags_list_view(request):

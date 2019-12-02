@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+     <form action="{{ tag.get_delete_url }}" class="form-delete" method="post">
+    {% csrf_token %}
+        <h3>Are you sure you want to delete <b>"{{ tag.title }}"</b>tag?</h3>
+        <a href="{% url 'tag-list' %}">Cancel</a>
+        <button type="submit" name="button" class="btn btn-danger">Delete</button>
+    </form>
+</body>
+</html>
