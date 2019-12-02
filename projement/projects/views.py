@@ -2,15 +2,16 @@ import os
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, redirect
 from django.urls.base import reverse_lazy
 from django.utils.safestring import mark_safe
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 from operator import attrgetter
 from markdown import markdown
 from itertools import chain
-from projects.forms import ProjectForm
+from projects.forms import ProjectForm, TagForm
 from projects.models import Project
 
 
@@ -50,3 +51,16 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('dashboard')
 
 
+class TagCreate(View):
+    def get(self,request):
+        form = TagForm()
+        args = {'form': form}
+        return render(request, 'projects/tag_create.html', args)
+
+    def post(self,request):
+        form = TagForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('tag_create_url')
+        args = {'form': form}
+        return render(request, 'projects/tag_create.html', args)
