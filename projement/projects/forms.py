@@ -1,4 +1,3 @@
-
 from django import forms
 
 from crispy_forms.helper import FormHelper
@@ -11,7 +10,19 @@ from projects.models import Project, Tag, DataOfTag
 class ProjectCreateForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = '__all__'
+        fields = (
+            'company',
+            'title',
+            'start_date',
+            'end_date',
+            'estimated_design',
+            'actual_design',
+            'estimated_development',
+            'actual_development',
+            'estimated_testing',
+            'actual_testing',
+            'tags',
+        )
 
     def save(self, commit=True):
         projects = super(ProjectCreateForm, self).save(commit=False)
@@ -29,7 +40,12 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ['actual_design', 'actual_development', 'actual_testing', 'tags', ]
+        fields = [
+            'additional_hour_design',
+            'additional_hour_development',
+            'additional_hour_testing',
+            'tags',
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -39,6 +55,7 @@ class ProjectForm(forms.ModelForm):
     def save(self, commit=True):
         projects = super(ProjectForm, self).save(commit=False)
         projects.save()
+
         data_of_tag = DataOfTag.objects.create(
             tag=projects.tags,
             project=projects,

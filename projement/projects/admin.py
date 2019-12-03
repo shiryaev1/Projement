@@ -24,6 +24,7 @@ class ProjectAdmin(admin.ModelAdmin):
         (None, {'fields': ['company', 'title', 'start_date', 'end_date', 'tags',]}),
         ('Estimated hours', {'fields': ['estimated_design', 'estimated_development', 'estimated_testing',]}),
         ('Actual hours', {'fields': ['actual_design', 'actual_development', 'actual_testing']}),
+        ('Additional hours', {'fields': ['additional_hour_design', 'additional_hour_development', 'additional_hour_testing']})
     )
 
     def get_readonly_fields(self, request, obj=None):
