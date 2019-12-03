@@ -8,12 +8,12 @@ from django.shortcuts import render, redirect
 from django.urls.base import reverse_lazy
 from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView, View
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic.list import ListView
 from operator import attrgetter
 from markdown import markdown
 from itertools import chain
-from projects.forms import ProjectForm, TagForm
+from projects.forms import ProjectForm, TagForm, ProjectCreateForm
 from projects.models import Project, Tag
 
 
@@ -45,6 +45,14 @@ class DashboardView(LoginRequiredMixin, ListView):
         projects = list(chain(active_projects, end_projects))
 
         return projects
+
+
+class ProjectCreateView(LoginRequiredMixin, CreateView):
+    model = Project
+
+    template_name = 'projects/create_project.html'
+    form_class = ProjectCreateForm
+    success_url = reverse_lazy('dashboard')
 
 
 class ProjectUpdateView(LoginRequiredMixin, UpdateView):

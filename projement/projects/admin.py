@@ -1,31 +1,28 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 
-from projects.models import Company, Project, Tag
+from projects.models import Company, Project, Tag, DataOfTag
 
 
-# class CountryFilter(SimpleListFilter):
-#     title = 'company__name'
-#     parameter_name = 'company__name'
-#
+# class CustomRelatedOnlyFieldListFilter(admin.SimpleListFilter):
+#     title = 'id'
+#     parameter_name = 'id'
 #     def lookups(self, request, model_admin):
-#         companies = Company.objects.all().values()
-#         return companies
-#
+#         companies = Company.objects.values_list('name')
+#         for company in companies:
+#             return company
 #     def queryset(self, request, queryset):
-#         queryset = Project.objects.filter()
-#         return queryset
-
+#         return Project.objects.all()
 
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'company', 'start_date', 'end_date',)
-    list_filter = ('company__name', 'company__id')
+    # list_filter = ('company__name', CustomRelatedOnlyFieldListFilter)
     ordering = ('-start_date',)
-    # list_filter = (CountryFilter, )
+
 
     fieldsets = (
-        (None, {'fields': ['company', 'title', 'start_date', 'end_date', 'tag']}),
-        ('Estimated hours', {'fields': ['estimated_design', 'estimated_development', 'estimated_testing']}),
+        (None, {'fields': ['company', 'title', 'start_date', 'end_date', 'tags',]}),
+        ('Estimated hours', {'fields': ['estimated_design', 'estimated_development', 'estimated_testing',]}),
         ('Actual hours', {'fields': ['actual_design', 'actual_development', 'actual_testing']}),
     )
 
@@ -39,3 +36,4 @@ class ProjectAdmin(admin.ModelAdmin):
 admin.site.register(Company)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Tag)
+admin.site.register(DataOfTag)

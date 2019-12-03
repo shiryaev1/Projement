@@ -72,7 +72,8 @@ class Project(models.Model):
                                              MinValueValidator(0),
                                          ]
                                          )
-    tag = models.ManyToManyField('Tag', blank=True)
+
+    tags = models.ForeignKey('Tag', blank=True, default=None, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -98,7 +99,7 @@ class Project(models.Model):
 
 
 class Tag(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=16)
 
     def get_update_url(self):
         return reverse('tag-edit', kwargs={'id': self.id})
@@ -109,3 +110,12 @@ class Tag(models.Model):
     def __str__(self):
         return self.title
 
+
+class DataOfTag(models.Model):
+    tag = models.CharField(max_length=240)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    time_to_add = models.TimeField()
+
+    def __str__(self):
+        return f'Tag {self.tag} was attached' \
+               f' to a project {self.project.title}, stored.'
