@@ -123,14 +123,22 @@ class Project(models.Model):
         user = get_request().user
         if self.pk is not None:
             original = Project.objects.get(pk=self.pk)
-            if original.actual_testing != self.actual_testing or original.actual_development != self.actual_development or original.actual_design != self.actual_design:
+            if original.actual_testing != self.actual_testing\
+                    or original.actual_development != self.actual_development\
+                    or original.actual_design != self.actual_design:
                 HistoryOfChanges.actual_testing = self.actual_testing
                 HistoryOfChanges.actual_development = self.actual_development
                 HistoryOfChanges.change_actual_design = self.actual_design
                 HistoryOfChanges.objects.get_or_create(
-                    change_actual_design=self.actual_design,
-                    actual_development=self.actual_development,
-                    actual_testing=self.actual_testing,
+                    initial_actual_design=original.actual_design,
+                    change_delta_actual_design=self.actual_design - original.actual_design,
+                    resulting_actual_design=self.actual_design,
+                    initial_actual_development=original.actual_development,
+                    change_delta_actual_development=self.actual_development - original.actual_development,
+                    resulting_actual_development=self.actual_development,
+                    initial_actual_testing=original.actual_testing,
+                    change_delta_actual_testing=self.actual_testing - original.actual_testing,
+                    resulting_actual_testing=self.actual_testing,
                     change_time=timezone.now(),
                     project=original,
                     owner=user
@@ -163,12 +171,19 @@ class DataOfTag(models.Model):
 
 
 class HistoryOfChanges(models.Model):
-    change_actual_design = models.CharField(max_length=164, blank=True)
-    actual_development = models.CharField(max_length=164, blank=True)
-    actual_testing = models.CharField(max_length=164, blank=True)
+    initial_actual_design = models.CharField(max_length=164, blank=True)
+    change_delta_actual_design = models.CharField(max_length=164, blank=True)
+    resulting_actual_design = models.CharField(max_length=164, blank=True)
+    initial_actual_development = models.CharField(max_length=164, blank=True)
+    change_delta_actual_development = models.CharField(max_length=164, blank=True)
+    resulting_actual_development = models.CharField(max_length=164, blank=True)
+    initial_actual_testing = models.CharField(max_length=164, blank=True)
+    change_delta_actual_testing = models.CharField(max_length=164, blank=True)
+    resulting_actual_testing = models.CharField(max_length=164, blank=True)
     change_time = models.TimeField(blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Change in {self.project.title} project at {self.change_time}'
+
