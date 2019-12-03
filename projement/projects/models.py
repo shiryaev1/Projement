@@ -4,6 +4,11 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django_currentuser.db.models import CurrentUserField
+from django_currentuser.middleware import (
+    get_current_user, get_current_authenticated_user)
+
+from projects.get_request import get_request
 
 
 class Company(models.Model):
@@ -115,17 +120,20 @@ class Project(models.Model):
         return self.total_actual_hours > self.total_estimated_hours
 
     def save(self, *args, **kwargs):
+        user = get_request().user
         if self.pk is not None:
             original = Project.objects.get(pk=self.pk)
-            if original.actual_testing != self.actual_testing:
+            if original.actual_testing != self.actual_testing or original.actual_development != self.actual_development or original.actual_design != self.actual_design:
                 HistoryOfChanges.actual_testing = self.actual_testing
+                HistoryOfChanges.actual_development = self.actual_development
+                HistoryOfChanges.change_actual_design = self.actual_design
                 HistoryOfChanges.objects.get_or_create(
                     change_actual_design=self.actual_design,
                     actual_development=self.actual_development,
                     actual_testing=self.actual_testing,
                     change_time=timezone.now(),
                     project=original,
-
+                    owner=user
                 )
                 HistoryOfChanges.save(self, *args, **kwargs)
         super(Project, self).save(*args, **kwargs)
@@ -160,7 +168,7 @@ class HistoryOfChanges(models.Model):
     actual_testing = models.CharField(max_length=164, blank=True)
     change_time = models.TimeField(blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Change in {self.project.title} project at {self.change_time}'

@@ -49,7 +49,6 @@ class DashboardView(LoginRequiredMixin, ListView):
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
-
     template_name = 'projects/create_project.html'
     form_class = ProjectCreateForm
     success_url = reverse_lazy('dashboard')
@@ -59,6 +58,10 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     success_url = reverse_lazy('dashboard')
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super(ProjectUpdateView, self).form_valid(form)
 
 
 class TagCreate(View):
