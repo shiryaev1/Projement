@@ -1,5 +1,4 @@
-import uuid
-
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -115,6 +114,22 @@ class Project(models.Model):
     def is_over_budget(self):
         return self.total_actual_hours > self.total_estimated_hours
 
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            original = Project.objects.get(pk=self.pk)
+            if original.actual_testing != self.actual_testing:
+                HistoryOfChanges.actual_testing = self.actual_testing
+                HistoryOfChanges.objects.get_or_create(
+                    change_actual_design=self.actual_design,
+                    actual_development=self.actual_development,
+                    actual_testing=self.actual_testing,
+                    change_time=timezone.now(),
+                    project=original,
+
+                )
+                HistoryOfChanges.save(self, *args, **kwargs)
+        super(Project, self).save(*args, **kwargs)
+
 
 class Tag(models.Model):
     title = models.CharField(max_length=16)
@@ -137,3 +152,15 @@ class DataOfTag(models.Model):
     def __str__(self):
         return f'Tag {self.tag} was attached' \
                f' to a project {self.project.title}, stored.'
+
+
+class HistoryOfChanges(models.Model):
+    change_actual_design = models.CharField(max_length=164, blank=True)
+    actual_development = models.CharField(max_length=164, blank=True)
+    actual_testing = models.CharField(max_length=164, blank=True)
+    change_time = models.TimeField(blank=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Change in {self.project.title} project at {self.change_time}'

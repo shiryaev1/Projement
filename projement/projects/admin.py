@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 
-from projects.models import Company, Project, Tag, DataOfTag
+from projects.models import Company, Project, Tag, DataOfTag, HistoryOfChanges
 
 
 # class CustomRelatedOnlyFieldListFilter(admin.SimpleListFilter):
@@ -38,3 +38,4 @@ admin.site.register(Company)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Tag)
 admin.site.register(DataOfTag)
+admin.site.register(HistoryOfChanges)
