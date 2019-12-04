@@ -4,10 +4,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django_currentuser.db.models import CurrentUserField
-from django_currentuser.middleware import (
-    get_current_user, get_current_authenticated_user)
-
 from projects.get_request import get_request
 
 
@@ -80,20 +76,21 @@ class Project(models.Model):
     tags = models.ForeignKey('Tag', blank=True, default=None, null=True,
                              on_delete=models.CASCADE)
     additional_hour_design = models.DecimalField(max_digits=7, decimal_places=2,
-                                            validators=[
-                                                MaxValueValidator(10000),
-                                                MinValueValidator(0),
-                                            ], default=0)
-    additional_hour_development = models.DecimalField(max_digits=7, decimal_places=2,
-                                            validators=[
-                                                MaxValueValidator(10000),
-                                                MinValueValidator(0),
-                                            ], default=0)
+                                                 validators=[
+                                                     MaxValueValidator(10000),
+                                                     MinValueValidator(0),
+                                                 ], default=0)
+    additional_hour_development = models.DecimalField(max_digits=7,
+                                                      decimal_places=2,
+                                                      validators=[
+                                                          MaxValueValidator(10000),
+                                                          MinValueValidator(0),
+                                                      ], default=0)
     additional_hour_testing = models.DecimalField(max_digits=7, decimal_places=2,
-                                            validators=[
-                                                MaxValueValidator(10000),
-                                                MinValueValidator(0),
-                                            ], default=0)
+                                                  validators=[
+                                                      MaxValueValidator(10000),
+                                                      MinValueValidator(0),
+                                                  ], default=0)
 
     def __str__(self):
         return self.title
@@ -130,13 +127,13 @@ class Project(models.Model):
                 HistoryOfChanges.actual_development = self.actual_development
                 HistoryOfChanges.change_actual_design = self.actual_design
                 HistoryOfChanges.objects.get_or_create(
-                    initial_actual_design=original.actual_design,
+                    # initial_actual_design=original.actual_design,
                     change_delta_actual_design=self.actual_design - original.actual_design,
                     resulting_actual_design=self.actual_design,
-                    initial_actual_development=original.actual_development,
+                    # initial_actual_development=original.actual_development,
                     change_delta_actual_development=self.actual_development - original.actual_development,
                     resulting_actual_development=self.actual_development,
-                    initial_actual_testing=original.actual_testing,
+                    # initial_actual_testing=original.actual_testing,
                     change_delta_actual_testing=self.actual_testing - original.actual_testing,
                     resulting_actual_testing=self.actual_testing,
                     change_time=timezone.now(),
@@ -171,13 +168,10 @@ class DataOfTag(models.Model):
 
 
 class HistoryOfChanges(models.Model):
-    initial_actual_design = models.CharField(max_length=164, blank=True)
     change_delta_actual_design = models.CharField(max_length=164, blank=True)
     resulting_actual_design = models.CharField(max_length=164, blank=True)
-    initial_actual_development = models.CharField(max_length=164, blank=True)
     change_delta_actual_development = models.CharField(max_length=164, blank=True)
     resulting_actual_development = models.CharField(max_length=164, blank=True)
-    initial_actual_testing = models.CharField(max_length=164, blank=True)
     change_delta_actual_testing = models.CharField(max_length=164, blank=True)
     resulting_actual_testing = models.CharField(max_length=164, blank=True)
     change_time = models.TimeField(blank=True)
@@ -187,3 +181,12 @@ class HistoryOfChanges(models.Model):
     def __str__(self):
         return f'Change in {self.project.title} project at {self.change_time}'
 
+
+class InitialDataOfProject(models.Model):
+    initial_actual_design = models.DecimalField(max_digits=7, decimal_places=2)
+    initial_actual_development = models.DecimalField(max_digits=7, decimal_places=2)
+    initial_actual_testing = models.DecimalField(max_digits=7, decimal_places=2)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Initial data {self.project} project.'

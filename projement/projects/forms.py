@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Button
 from django.utils import timezone
 
-from projects.models import Project, Tag, DataOfTag
+from projects.models import Project, Tag, DataOfTag, InitialDataOfProject
 
 
 class ProjectCreateForm(forms.ModelForm):
@@ -27,8 +27,14 @@ class ProjectCreateForm(forms.ModelForm):
     def save(self, commit=True):
         projects = super(ProjectCreateForm, self).save(commit=False)
         projects.save()
+        initial_data_of_project = InitialDataOfProject.objects.get_or_create(
+            initial_actual_design=projects.actual_design,
+            initial_actual_development=projects.actual_development,
+            initial_actual_testing=projects.actual_testing,
+            project=projects
+        )
         data_of_tag = DataOfTag.objects.create(
-            tag=projects.tags,
+            tag=projects.tags or None,
             project=projects,
             time_to_add=timezone.now(),
         )
