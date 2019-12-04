@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
+from taggit.managers import TaggableManager
 from projects.get_request import get_request
 
 
@@ -73,8 +74,7 @@ class Project(models.Model):
                                          ]
                                          )
 
-    tags = models.ForeignKey('Tag', blank=True, default=None, null=True,
-                             on_delete=models.CASCADE)
+    tags = models.ManyToManyField('Tag', blank=True, default=None, null=True, related_name='project')
     additional_hour_design = models.DecimalField(max_digits=7, decimal_places=2,
                                                  validators=[
                                                      MaxValueValidator(10000),

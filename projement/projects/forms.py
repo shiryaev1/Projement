@@ -1,3 +1,5 @@
+import pdb
+
 from django import forms
 
 from crispy_forms.helper import FormHelper
@@ -23,15 +25,6 @@ class ProjectCreateForm(forms.ModelForm):
             'actual_testing',
             'tags',
         )
-
-    # def __init__(self, *args, **kwargs):
-    #     project = super(ProjectCreateForm, self).__init__(*args, **kwargs)
-    #     if self.fields['tags']:
-    #         data_of_tag = DataOfTag.objects.create(
-    #             tag=self.fields['tags'],
-    #             project=project,
-    #             time_to_add=timezone.now(),
-    #         )
 
     def save(self, commit=True):
         projects = super(ProjectCreateForm, self).save(commit=False)
@@ -71,14 +64,17 @@ class ProjectForm(forms.ModelForm):
     def save(self, commit=True):
         projects = super(ProjectForm, self).save(commit=False)
         projects.save()
+        if self.data['tags']:
+            tag__in = self.data['tags']
+            print(tag__in)
+            data_of_tag = DataOfTag.objects.create(
+                # pdb.set_trace(),
+                tag=self.cleaned_data.get('tags')._result_cache,
+                project=projects,
+                time_to_add=timezone.now(),
+            )
 
-        data_of_tag = DataOfTag.objects.create(
-            tag=projects.tags,
-            project=projects,
-            time_to_add=timezone.now(),
-        )
-
-        return data_of_tag
+        return projects
 
 
 class TagForm(forms.ModelForm):

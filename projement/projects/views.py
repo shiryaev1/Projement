@@ -59,9 +59,9 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ProjectForm
     success_url = reverse_lazy('dashboard')
 
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        return super(ProjectUpdateView, self).form_valid(form)
+    # def form_valid(self, form):
+    #     form.instance.created_by = self.request.user
+    #     return super(ProjectUpdateView, self).form_valid(form)
 
 
 class TagCreate(View):
