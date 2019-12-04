@@ -24,6 +24,15 @@ class ProjectCreateForm(forms.ModelForm):
             'tags',
         )
 
+    # def __init__(self, *args, **kwargs):
+    #     project = super(ProjectCreateForm, self).__init__(*args, **kwargs)
+    #     if self.fields['tags']:
+    #         data_of_tag = DataOfTag.objects.create(
+    #             tag=self.fields['tags'],
+    #             project=project,
+    #             time_to_add=timezone.now(),
+    #         )
+
     def save(self, commit=True):
         projects = super(ProjectCreateForm, self).save(commit=False)
         projects.save()
@@ -33,13 +42,14 @@ class ProjectCreateForm(forms.ModelForm):
             initial_actual_testing=projects.actual_testing,
             project=projects
         )
-        data_of_tag = DataOfTag.objects.create(
-            tag=projects.tags or None,
-            project=projects,
-            time_to_add=timezone.now(),
-        )
+        if self.data['tags']:
+            data_of_tag = DataOfTag.objects.create(
+                tag=projects.tags,
+                project=projects,
+                time_to_add=timezone.now(),
+            )
 
-        return data_of_tag
+        return projects
 
 
 class ProjectForm(forms.ModelForm):
