@@ -1,5 +1,7 @@
 import os
 
+import xlwt
+from django.http import HttpResponse
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,7 +12,7 @@ from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic.list import ListView
-from operator import attrgetter
+
 from markdown import markdown
 from itertools import chain
 from projects.forms import ProjectForm, TagForm, ProjectCreateForm
@@ -124,3 +126,64 @@ class TagDeleteView(View):
 def tags_list_view(request):
     tags = Tag.objects.all()
     return render(request, 'projects/tags_list.html', {'tags': tags})
+
+
+def export_projects_xls(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="users.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Projects Data')
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = [
+        'company',
+        'title',
+        'start_date',
+        'end_date',
+        'estimated_design',
+        'actual_design',
+        'estimated_development',
+        'actual_development',
+        'estimated_testing',
+        'actual_testing',
+        'tags',
+        'additional_hour_design',
+        'additional_hour_development',
+        'additional_hour_testing',
+    ]
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    font_style = xlwt.XFStyle()
+
+    rows = Project.objects.all().values_list(
+        'company',
+        'title',
+        'start_date',
+        'end_date',
+        'estimated_design',
+        'actual_design',
+        'estimated_development',
+        'actual_development',
+        'estimated_testing',
+        'actual_testing',
+        'tags',
+        'additional_hour_design',
+        'additional_hour_development',
+        'additional_hour_testing',
+    )
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response
+
