@@ -109,7 +109,8 @@ class Project(models.Model):
     @property
     def total_actual_hours(self):
         return self.actual_design + self.actual_development +\
-               self.actual_testing + self.additional_hour_design +\
+               self.actual_testing +\
+               self.additional_hour_design +\
                self.additional_hour_development + self.additional_hour_testing
 
     @property
@@ -127,13 +128,10 @@ class Project(models.Model):
                 HistoryOfChanges.actual_development = self.actual_development
                 HistoryOfChanges.change_actual_design = self.actual_design
                 HistoryOfChanges.objects.get_or_create(
-                    # initial_actual_design=original.actual_design,
                     change_delta_actual_design=self.actual_design - original.actual_design,
                     resulting_actual_design=self.actual_design,
-                    # initial_actual_development=original.actual_development,
                     change_delta_actual_development=self.actual_development - original.actual_development,
                     resulting_actual_development=self.actual_development,
-                    # initial_actual_testing=original.actual_testing,
                     change_delta_actual_testing=self.actual_testing - original.actual_testing,
                     resulting_actual_testing=self.actual_testing,
                     change_time=timezone.now(),

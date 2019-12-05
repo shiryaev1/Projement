@@ -1,7 +1,6 @@
 import os
+import pdb
 
-import xlwt
-from django.http import HttpResponse
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
@@ -41,9 +40,9 @@ class DashboardView(LoginRequiredMixin, ListView):
     template_name = 'projects/dashboard.html'
 
     def get_queryset(self):
-        active_projects = Project.objects.select_related('company').exclude(
+        end_projects = Project.objects.filter(
             end_date__isnull=False).order_by('-start_date')
-        end_projects = Project.objects.exclude(end_date__isnull=True).order_by('-end_date')
+        active_projects = Project.objects.filter(end_date__isnull=True).order_by('-end_date')
         projects = list(chain(active_projects, end_projects))
 
         return projects
@@ -60,13 +59,9 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     success_url = reverse_lazy('dashboard')
+    
 
-    # def form_valid(self, form):
-    #     form.instance.created_by = self.request.user
-    #     return super(ProjectUpdateView, self).form_valid(form)
-
-
-class TagCreate(View):
+class TagCreate(LoginRequiredMixin, View):
     def get(self,request):
         form = TagForm()
         args = {'form': form}
@@ -81,7 +76,7 @@ class TagCreate(View):
         return render(request, 'projects/tag_create.html', args)
 
 
-class TagEditView(View):
+class TagEditView(LoginRequiredMixin, View):
 
     template_name = 'projects/tag_edit.html'
 
@@ -111,7 +106,7 @@ class TagEditView(View):
         return render(request, self.template_name, args)
 
 
-class TagDeleteView(View):
+class TagDeleteView(LoginRequiredMixin, View):
     def get(self, request, id):
         tag = Tag.objects.get(id=id)
         args = {'tag': tag}
@@ -126,64 +121,4 @@ class TagDeleteView(View):
 def tags_list_view(request):
     tags = Tag.objects.all()
     return render(request, 'projects/tags_list.html', {'tags': tags})
-
-
-def export_projects_xls(request):
-    response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="users.xls"'
-
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Projects Data')
-
-    row_num = 0
-
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-
-    columns = [
-        'company',
-        'title',
-        'start_date',
-        'end_date',
-        'estimated_design',
-        'actual_design',
-        'estimated_development',
-        'actual_development',
-        'estimated_testing',
-        'actual_testing',
-        'tags',
-        'additional_hour_design',
-        'additional_hour_development',
-        'additional_hour_testing',
-    ]
-
-    for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style)
-
-    font_style = xlwt.XFStyle()
-
-    rows = Project.objects.all().values_list(
-        'company',
-        'title',
-        'start_date',
-        'end_date',
-        'estimated_design',
-        'actual_design',
-        'estimated_development',
-        'actual_development',
-        'estimated_testing',
-        'actual_testing',
-        'tags',
-        'additional_hour_design',
-        'additional_hour_development',
-        'additional_hour_testing',
-    )
-    for row in rows:
-        row_num += 1
-        for col_num in range(len(row)):
-            ws.write(row_num, col_num, row[col_num], font_style)
-
-    wb.save(response)
-
-    return response
 

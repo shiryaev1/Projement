@@ -46,10 +46,16 @@ class ProjectCreateForm(forms.ModelForm):
 
 
 class ProjectForm(forms.ModelForm):
+    additional_hour_design = forms.DecimalField()
+    additional_hour_development = forms.DecimalField()
+    additional_hour_testing = forms.DecimalField()
 
     class Meta:
         model = Project
         fields = [
+            'actual_design',
+            'actual_development',
+            'actual_testing',
             'additional_hour_design',
             'additional_hour_development',
             'additional_hour_testing',
@@ -63,13 +69,11 @@ class ProjectForm(forms.ModelForm):
 
     def save(self, commit=True):
         projects = super(ProjectForm, self).save(commit=False)
+        # projects.actual_testing = self.actual_testing + self.cleaned_data.get('additional_hour_testing')
         projects.save()
-        if self.data['tags']:
-            tag__in = self.data['tags']
-            print(tag__in)
+        if self.cleaned_data['tags']:
             data_of_tag = DataOfTag.objects.create(
-                # pdb.set_trace(),
-                tag=self.cleaned_data.get('tags')._result_cache,
+                tag=self.cleaned_data.get('tags')._result_cache or None,
                 project=projects,
                 time_to_add=timezone.now(),
             )

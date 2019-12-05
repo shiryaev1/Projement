@@ -4,6 +4,7 @@ from django.urls import path
 from projects import views
 from projects.views import AssignmentView, DashboardView, ProjectUpdateView, \
     TagCreate, TagEditView, TagDeleteView, ProjectCreateView
+from projects.export import export_projects_xls
 
 urlpatterns = [
     url(r'^$', AssignmentView.as_view(), name='assignment'),
@@ -14,5 +15,5 @@ urlpatterns = [
     url(r'^tag/(?P<id>\d+)/edit/$', TagEditView.as_view(), name='tag-edit'),
     url(r'^tag/(?P<id>\d+)/delete/$', TagDeleteView.as_view(), name='tag-delete'),
     url(r'^tags/$', views.tags_list_view, name='tag-list'),
-    path('export/excel/', views.export_projects_xls,  name='export_excel'),
+    url(r'^export/excel/$', export_projects_xls, name='export_excel')
 ]
