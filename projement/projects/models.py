@@ -1,10 +1,10 @@
 from django.contrib.auth.models import User
-from django.db import models
+from django.db import models, transaction
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
-from taggit.managers import TaggableManager
+from django.db.models import Count, F
 from projects.get_request import get_request
 
 
@@ -92,6 +92,32 @@ class Project(models.Model):
                                                       MinValueValidator(0),
                                                   ], default=0)
 
+    def save(self, *args, **kwargs):
+        user = get_request().user
+        if self.pk is not None:
+            original = Project.objects.get(pk=self.pk)
+            if original.actual_testing != self.actual_testing\
+                    or original.actual_development != self.actual_development\
+                    or original.actual_design != self.actual_design:
+                HistoryOfChanges.actual_testing = self.actual_testing
+                HistoryOfChanges.actual_development = self.actual_development
+                HistoryOfChanges.change_actual_design = self.actual_design
+                HistoryOfChanges.objects.get_or_create(
+                    change_delta_actual_design=self.actual_design - original.actual_design,
+                    resulting_actual_design=self.actual_design,
+                    change_delta_actual_development=self.actual_development - original.actual_development,
+                    resulting_actual_development=self.actual_development,
+                    change_delta_actual_testing=self.actual_testing - original.actual_testing,
+                    resulting_actual_testing=self.actual_testing,
+                    change_time=timezone.now(),
+                    project=original,
+                    owner=user
+                )
+                HistoryOfChanges.save(self, *args, **kwargs)
+            # original.actual_design = F('additional_hour_design') + self.actual_design
+            # original.refresh_from_db()
+        super(Project, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.title
 
@@ -117,33 +143,12 @@ class Project(models.Model):
     def is_over_budget(self):
         return self.total_actual_hours > self.total_estimated_hours
 
-    def save(self, *args, **kwargs):
-        user = get_request().user
-        if self.pk is not None:
-            original = Project.objects.get(pk=self.pk)
-            if original.actual_testing != self.actual_testing\
-                    or original.actual_development != self.actual_development\
-                    or original.actual_design != self.actual_design:
-                HistoryOfChanges.actual_testing = self.actual_testing
-                HistoryOfChanges.actual_development = self.actual_development
-                HistoryOfChanges.change_actual_design = self.actual_design
-                HistoryOfChanges.objects.get_or_create(
-                    change_delta_actual_design=self.actual_design - original.actual_design,
-                    resulting_actual_design=self.actual_design,
-                    change_delta_actual_development=self.actual_development - original.actual_development,
-                    resulting_actual_development=self.actual_development,
-                    change_delta_actual_testing=self.actual_testing - original.actual_testing,
-                    resulting_actual_testing=self.actual_testing,
-                    change_time=timezone.now(),
-                    project=original,
-                    owner=user
-                )
-                HistoryOfChanges.save(self, *args, **kwargs)
-        super(Project, self).save(*args, **kwargs)
-
 
 class Tag(models.Model):
     title = models.CharField(max_length=16)
+
+    def get_absolute_url(self):
+        return reverse('tag-list')
 
     def get_update_url(self):
         return reverse('tag-edit', kwargs={'id': self.id})

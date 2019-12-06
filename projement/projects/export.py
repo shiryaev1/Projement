@@ -57,7 +57,7 @@ def export_projects_xls(request):
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):
-            ws.write(row_num, col_num, row[col_num], font_style)
+            ws.write(row_num, col_num, str(row[col_num]), font_style)
 
     wb.save(response)
 

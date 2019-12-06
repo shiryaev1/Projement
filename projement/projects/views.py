@@ -59,21 +59,26 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     success_url = reverse_lazy('dashboard')
-    
 
-class TagCreate(LoginRequiredMixin, View):
-    def get(self,request):
-        form = TagForm()
-        args = {'form': form}
-        return render(request, 'projects/tag_create.html', args)
 
-    def post(self,request):
-        form = TagForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('tag-list')
-        args = {'form': form}
-        return render(request, 'projects/tag_create.html', args)
+class TagCreate(LoginRequiredMixin, CreateView):
+    model = Tag
+    form_class = TagForm
+    template_name = 'projects/tag_create.html'
+    reverse_lazy = 'tag-list'
+# class TagCreate(LoginRequiredMixin, View):
+#     def get(self,request):
+#         form = TagForm()
+#         args = {'form': form}
+#         return render(request, 'projects/tag_create.html', args)
+#
+#     def post(self,request):
+#         form = TagForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             # return redirect('tag-list')
+#         args = {'form': form}
+#         return render(request, 'projects/tag_create.html', args)
 
 
 class TagEditView(LoginRequiredMixin, View):

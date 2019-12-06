@@ -46,9 +46,6 @@ class ProjectCreateForm(forms.ModelForm):
 
 
 class ProjectForm(forms.ModelForm):
-    additional_hour_design = forms.DecimalField()
-    additional_hour_development = forms.DecimalField()
-    additional_hour_testing = forms.DecimalField()
 
     class Meta:
         model = Project
@@ -69,7 +66,7 @@ class ProjectForm(forms.ModelForm):
 
     def save(self, commit=True):
         projects = super(ProjectForm, self).save(commit=False)
-        # projects.actual_testing = self.actual_testing + self.cleaned_data.get('additional_hour_testing')
+
         projects.save()
         if self.cleaned_data['tags']:
             data_of_tag = DataOfTag.objects.create(
