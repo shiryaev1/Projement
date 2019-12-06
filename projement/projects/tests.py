@@ -200,7 +200,7 @@ class TagTestCase(TestCase):
             'title': self.create_tag()
         })
 
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/tags/')
 
     def test_update_tag(self):
 
@@ -210,7 +210,7 @@ class TagTestCase(TestCase):
         tag = self.create_tag()
         # pdb.set_trace()
         response = client.post(
-            reverse('tag-edit', kwargs={'id': tag.id}),
+            reverse('tag-edit', kwargs={'pk': tag.id}),
             {
                 'title': 'django',
             }
@@ -225,7 +225,7 @@ class TagTestCase(TestCase):
         # Authenticated users can update tag
 
         response = self.authenticated_client.post(
-            reverse('tag-edit', kwargs={'id': tag.id}),
+            reverse('tag-edit', kwargs={'pk': tag.id}),
             {
                 'title': 'django',
             }
@@ -242,7 +242,7 @@ class TagTestCase(TestCase):
         client = Client()
         tag = self.create_tag()
         response = client.delete(
-            reverse('tag-delete', kwargs={'id': tag.id}))
+            reverse('tag-delete', kwargs={'pk': tag.id}))
 
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f'/login/?next=/tag/{tag.id}/delete/')

@@ -6,10 +6,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import render, redirect
-from django.urls.base import reverse_lazy
+from django.urls.base import reverse_lazy, reverse
 from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView, View
-from django.views.generic.edit import UpdateView, CreateView
+from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic.list import ListView
 
 from markdown import markdown
@@ -66,61 +66,19 @@ class TagCreate(LoginRequiredMixin, CreateView):
     form_class = TagForm
     template_name = 'projects/tag_create.html'
     reverse_lazy = 'tag-list'
-# class TagCreate(LoginRequiredMixin, View):
-#     def get(self,request):
-#         form = TagForm()
-#         args = {'form': form}
-#         return render(request, 'projects/tag_create.html', args)
-#
-#     def post(self,request):
-#         form = TagForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             # return redirect('tag-list')
-#         args = {'form': form}
-#         return render(request, 'projects/tag_create.html', args)
 
 
-class TagEditView(LoginRequiredMixin, View):
-
+class TagEditView(LoginRequiredMixin, UpdateView):
+    model = Tag
+    form_class = TagForm
     template_name = 'projects/tag_edit.html'
-
-    def get(self, request, id):
-        try:
-            tag = Tag.objects.get(id=id)
-        except ObjectDoesNotExist:
-            raise Http404
-        form = TagForm(instance=tag)
-        args = {
-            'form': form,
-        }
-        return render(request, self.template_name, args)
-
-    def post(self, request, id):
-        try:
-            tag = Tag.objects.get(id=id)
-        except ObjectDoesNotExist:
-            return Http404
-        form = TagForm(request.POST, instance=tag)
-        if form.is_valid():
-            form.save()
-            return redirect('tag-list')
-        args = {
-            'form': form
-        }
-        return render(request, self.template_name, args)
+    reverse_lazy = 'tag-list'
 
 
-class TagDeleteView(LoginRequiredMixin, View):
-    def get(self, request, id):
-        tag = Tag.objects.get(id=id)
-        args = {'tag': tag}
-        return render(request, 'projects/tag_delete.html', args)
-
-    def post(self, request, id):
-        tag = Tag.objects.get(id=id)
-        tag.delete()
-        return redirect('tag-list')
+class TagDeleteView(LoginRequiredMixin, DeleteView):
+    model = Tag
+    template_name = 'projects/tag_delete.html'
+    success_url = reverse_lazy('tag-list')
 
 
 def tags_list_view(request):
