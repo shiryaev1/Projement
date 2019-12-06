@@ -3,19 +3,18 @@ import pdb
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
-from django.shortcuts import render, redirect
-from django.urls.base import reverse_lazy, reverse
+from django.shortcuts import render
+from django.urls.base import reverse_lazy
+from django.utils import timezone
 from django.utils.safestring import mark_safe
-from django.views.generic.base import TemplateView, View
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic.list import ListView
 
 from markdown import markdown
 from itertools import chain
 from projects.forms import ProjectForm, TagForm, ProjectCreateForm
-from projects.models import Project, Tag
+from projects.models import Project, Tag, HistoryOfChanges
 
 
 class AssignmentView(TemplateView):
@@ -59,6 +58,38 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     success_url = reverse_lazy('dashboard')
+
+    def post(self, request, *args, **kwargs):
+        original = Project.objects.get(pk=kwargs['pk'])
+
+        if float(original.actual_testing) != float(request.POST['actual_testing']) \
+                or float(original.actual_development) != float(request.POST['actual_development']) \
+                or float(original.actual_design) != float(request.POST['actual_design']):
+
+            HistoryOfChanges.objects.get_or_create(
+                change_delta_actual_design=float(request.POST['actual_design']) - float(original.actual_design),
+                resulting_actual_design=float(request.POST['actual_design']),
+                change_delta_actual_development=float(request.POST['actual_development']) - float(original.actual_development),
+                resulting_actual_development=float(request.POST['actual_development']),
+                change_delta_actual_testing=float(request.POST['actual_testing']) - float(original.actual_testing),
+                resulting_actual_testing=float(request.POST['actual_testing']),
+                change_time=timezone.now(),
+                project=original,
+                owner=request.user
+            )
+
+        return super(ProjectUpdateView, self).post(request, *args, **kwargs)
+
+
+class HistoryOfChangesView(LoginRequiredMixin, ListView):
+    model = HistoryOfChanges
+    context_object_name = 'history_of_changes'
+    template_name = 'projects/history_of_changes.html'
+
+    def get_queryset(self):
+        history_of_changes = HistoryOfChanges.objects.all()
+
+        return history_of_changes
 
 
 class TagCreate(LoginRequiredMixin, CreateView):

@@ -92,32 +92,6 @@ class Project(models.Model):
                                                       MinValueValidator(0),
                                                   ], default=0)
 
-    def save(self, *args, **kwargs):
-        user = get_request().user
-        if self.pk is not None:
-            original = Project.objects.get(pk=self.pk)
-            if original.actual_testing != self.actual_testing\
-                    or original.actual_development != self.actual_development\
-                    or original.actual_design != self.actual_design:
-                HistoryOfChanges.actual_testing = self.actual_testing
-                HistoryOfChanges.actual_development = self.actual_development
-                HistoryOfChanges.change_actual_design = self.actual_design
-                HistoryOfChanges.objects.get_or_create(
-                    change_delta_actual_design=self.actual_design - original.actual_design,
-                    resulting_actual_design=self.actual_design,
-                    change_delta_actual_development=self.actual_development - original.actual_development,
-                    resulting_actual_development=self.actual_development,
-                    change_delta_actual_testing=self.actual_testing - original.actual_testing,
-                    resulting_actual_testing=self.actual_testing,
-                    change_time=timezone.now(),
-                    project=original,
-                    owner=user
-                )
-                HistoryOfChanges.save(self, *args, **kwargs)
-            # original.actual_design = F('additional_hour_design') + self.actual_design
-            # original.refresh_from_db()
-        super(Project, self).save(*args, **kwargs)
-
     def __str__(self):
         return self.title
 
@@ -183,6 +157,9 @@ class HistoryOfChanges(models.Model):
 
     def __str__(self):
         return f'Change in {self.project.title} project at {self.change_time}'
+
+    # def get_absolute_url(self):
+    #     return reverse('history-of-changes', kwargs={'pk': self.pk, 'slug': slugify(self.project)})
 
 
 class InitialDataOfProject(models.Model):

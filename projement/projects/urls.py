@@ -3,7 +3,8 @@ from django.urls import path
 
 from projects import views
 from projects.views import AssignmentView, DashboardView, ProjectUpdateView, \
-    TagCreate, TagEditView, TagDeleteView, ProjectCreateView
+    TagCreate, TagEditView, TagDeleteView, ProjectCreateView, \
+    HistoryOfChangesView
 from projects.export import export_projects_xls
 
 urlpatterns = [
@@ -11,6 +12,8 @@ urlpatterns = [
     url(r'^dashboard/$', DashboardView.as_view(), name='dashboard'),
     url(r'^projects/create/$', ProjectCreateView.as_view(), name='project-create'),
     url(r'^projects/(?P<pk>[0-9]+)-(?P<slug>[-\w]*)/$', ProjectUpdateView.as_view(), name='project-update'),
+    # url(r'^history/(?P<pk>[0-9]+)-(?P<slug>[-\w]*)/$', HistoryOfChangesView.as_view(), name='history-of-changes'),
+    url(r'^history/$', HistoryOfChangesView.as_view(), name='history-of-changes'),
     url(r'^tag/create/$', TagCreate.as_view(), name='tag_create_url'),
     url(r'^tag/(?P<pk>\d+)/edit/$', TagEditView.as_view(), name='tag-edit'),
     url(r'^tag/(?P<pk>\d+)/delete/$', TagDeleteView.as_view(), name='tag-delete'),
