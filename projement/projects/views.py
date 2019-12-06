@@ -41,8 +41,8 @@ class DashboardView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         end_projects = Project.objects.filter(
-            end_date__isnull=False).order_by('-start_date')
-        active_projects = Project.objects.filter(end_date__isnull=True).order_by('-end_date')
+            end_date__isnull=False).order_by('-end_date')
+        active_projects = Project.objects.filter(end_date__isnull=True).order_by('-start_date')
         projects = list(chain(active_projects, end_projects))
 
         return projects
@@ -97,18 +97,14 @@ class HistoryOfChangesDetailView(LoginRequiredMixin, ListView):
     template_name = 'projects/history_of_changes_detail.html'
     model = HistoryOfChanges
     context_object_name = 'history_of_changes'
-    # pdb.set_trace()
 
     def get_queryset(self):
+
         history_of_changes = HistoryOfChanges.objects.filter(
             project__id=self.request.resolver_match.kwargs['pk']
         )
 
         return history_of_changes
-
-   # queryset = HistoryOfChanges.objects.filter(
-   #          project__id=request.resolver_match.kwargs['pk']
-   #      )
 
 
 class TagCreate(LoginRequiredMixin, CreateView):

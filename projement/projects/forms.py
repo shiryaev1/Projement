@@ -35,7 +35,7 @@ class ProjectCreateForm(forms.ModelForm):
             initial_actual_testing=projects.actual_testing,
             project=projects
         )
-        if self.data['tags']:
+        if self.cleaned_data['tags']:
             data_of_tag = DataOfTag.objects.create(
                 tag=projects.tags,
                 project=projects,
