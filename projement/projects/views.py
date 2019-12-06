@@ -8,6 +8,7 @@ from django.urls.base import reverse_lazy
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView
+from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic.list import ListView
 
@@ -86,10 +87,28 @@ class HistoryOfChangesView(LoginRequiredMixin, ListView):
     context_object_name = 'history_of_changes'
     template_name = 'projects/history_of_changes.html'
 
+    # def get_queryset(self):
+    #     history_of_changes = HistoryOfChanges.objects.all()
+    #
+    #     return history_of_changes
+
+
+class HistoryOfChangesDetailView(LoginRequiredMixin, ListView):
+    template_name = 'projects/history_of_changes_detail.html'
+    model = HistoryOfChanges
+    context_object_name = 'history_of_changes'
+    # pdb.set_trace()
+
     def get_queryset(self):
-        history_of_changes = HistoryOfChanges.objects.all()
+        history_of_changes = HistoryOfChanges.objects.filter(
+            project__id=self.request.resolver_match.kwargs['pk']
+        )
 
         return history_of_changes
+
+   # queryset = HistoryOfChanges.objects.filter(
+   #          project__id=request.resolver_match.kwargs['pk']
+   #      )
 
 
 class TagCreate(LoginRequiredMixin, CreateView):
