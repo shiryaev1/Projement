@@ -1,15 +1,14 @@
+
 from django.contrib import admin
 
 from projects.models import Company, Project, Tag, DataOfTag, HistoryOfChanges, \
     InitialDataOfProject
 
 
-class DecadeBornListFilter(admin.SimpleListFilter):
-    # Human-readable title which will be displayed in the
-    # right admin sidebar just above the filter options.
-    title = ('actual company')
+class ActualCompanyListFilter(admin.SimpleListFilter):
 
-    # Parameter for the filter that will be used in the URL query.
+    title = 'actual company'
+
     parameter_name = 'company'
 
     def lookups(self, request, model_admin):
@@ -17,14 +16,13 @@ class DecadeBornListFilter(admin.SimpleListFilter):
         return set([(project.company.id, project.company.name) for project in projects])
 
     def queryset(self, request, queryset):
-        projects = list(Project.objects.all())
-        pass
-
+        if self.value():
+            return queryset.filter(company__id__exact=self.value())
 
 
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'company', 'start_date', 'end_date',)
-    list_filter = ('company__name',  DecadeBornListFilter   )
+    list_filter = ('company__name',  ActualCompanyListFilter,)
     ordering = ('-start_date',)
 
     fieldsets = (
@@ -84,13 +82,13 @@ class InitialDataOfProjectAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': [
-        'initial_actual_design',
-        'initial_actual_development',
-        'initial_actual_testing',
-        'project',
-    ]}),
+            'initial_actual_design',
+            'initial_actual_development',
+            'initial_actual_testing',
+            'project',
+        ]}),
 
-)
+    )
 
     def get_readonly_fields(self, request, obj=None):
         if obj is None:
@@ -99,6 +97,7 @@ class InitialDataOfProjectAdmin(admin.ModelAdmin):
         return 'initial_actual_design',\
                'initial_actual_development',\
                'initial_actual_testing'
+
 
 admin.site.register(Company)
 admin.site.register(Project, ProjectAdmin)
