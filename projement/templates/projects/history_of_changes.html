@@ -8,12 +8,12 @@
                     <th width="12%">Project</th>
                     <th width="12%">Owner</th>
                     <th width="12%">Change time</th>
-                    <th width="12%">Change delta actual design</th>
-                    <th width="12%">Resulting actual design</th>
-                    <th width="12%">Change delta actual development</th>
-                    <th width="12%">Resulting actual development:</th>
-                    <th width="12%">Change delta actual testing</th>
-                    <th width="12%">Resulting actual testing</th>
+                    <th width="12%">Changes</th>
+{#                    <th width="12%">Resulting actual design</th>#}
+{#                    <th width="12%">Change delta actual development</th>#}
+{#                    <th width="12%">Resulting actual development:</th>#}
+{#                    <th width="12%">Change delta actual testing</th>#}
+{#                    <th width="12%">Resulting actual testing</th>#}
                 </tr>
             </thead>
             <tbody>
@@ -21,18 +21,18 @@
                     <tr>
                         <td>
                             {% spaceless %}
-                                <a href="{{ history.get_absolute_url }}">{{ history.project.title }}</a>
+                                <a href="">{{ history.project.title }}</a>
 
                             {% endspaceless %}
                         </td>
                         <td>{{ history.owner }}</td>
                         <td>{{ history.change_time }}</td>
-                        <td>{{ history.change_delta_actual_design }}</td>
-                        <td>{{ history.resulting_actual_design }}</td>
-                        <td>{{ history.change_delta_actual_development }}</td>
-                        <td>{{ history.resulting_actual_development }}</td>
-                        <td>{{ history.change_delta_actual_testing }}</td>
-                        <td>{{ history.resulting_actual_testing }}</td>
+                        <td><a href="{{ history.get_absolute_url }}">view changes</a></td>
+{#                        <td>{{ history.resulting_actual_design }}</td>#}
+{#                        <td>{{ history.change_delta_actual_development }}</td>#}
+{#                        <td>{{ history.resulting_actual_development }}</td>#}
+{#                        <td>{{ history.change_delta_actual_testing }}</td>#}
+{#                        <td>{{ history.resulting_actual_testing }}</td>#}
                     </tr>
                 {% endfor %}
             </tbody>

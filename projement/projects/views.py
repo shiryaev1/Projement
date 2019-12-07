@@ -8,14 +8,13 @@ from django.urls.base import reverse_lazy
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView
-from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic.list import ListView
 
 from markdown import markdown
 from itertools import chain
 from projects.forms import ProjectForm, TagForm, ProjectCreateForm
-from projects.models import Project, Tag, HistoryOfChanges
+from projects.models import Project, Tag, HistoryOfChanges, InitialDataOfProject
 
 
 class AssignmentView(TemplateView):
@@ -87,25 +86,29 @@ class HistoryOfChangesView(LoginRequiredMixin, ListView):
     context_object_name = 'history_of_changes'
     template_name = 'projects/history_of_changes.html'
 
-    # def get_queryset(self):
-    #     history_of_changes = HistoryOfChanges.objects.all()
-    #
-    #     return history_of_changes
-
 
 class HistoryOfChangesDetailView(LoginRequiredMixin, ListView):
-    template_name = 'projects/history_of_changes_detail.html'
+    template_name = 'projects/project_changes.html'
     model = HistoryOfChanges
     context_object_name = 'history_of_changes'
 
+
     def get_queryset(self):
-
         history_of_changes = HistoryOfChanges.objects.filter(
-            project__id=self.request.resolver_match.kwargs['pk']
+            id=self.request.resolver_match.kwargs['pk']
         )
-
+        initial_data = InitialDataOfProject.objects.filter(
+            project__id=self.request.resolver_match.kwargs['id'])
         return history_of_changes
 
+    def get_context_data(self, **kwargs):
+        context = super(HistoryOfChangesDetailView, self).get_context_data(**kwargs)
+        context['initial_data'] = InitialDataOfProject.objects.filter(
+            project__id=self.request.resolver_match.kwargs['id'])
+        # pdb.set_trace()
+        # Add any other variables to the context here
+        ...
+        return context
 
 class TagCreate(LoginRequiredMixin, CreateView):
     model = Tag

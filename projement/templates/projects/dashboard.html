@@ -9,6 +9,7 @@
                     <th width="30%">Company</th>
                     <th width="15%">Estimated</th>
                     <th width="15%">Actual</th>
+                    <th width="20%">Initial data</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,6 +28,7 @@
                         <td>{{ project.company.name }}</td>
                         <td>{{ project.total_estimated_hours }}</td>
                         <td>{{ project.total_actual_hours }}</td>
+{#                        <td>{{ project.initialdataofproject_set.filter(id=id) }}</td>#}
                     </tr>
                 {% endfor %}
             </tbody>
@@ -36,6 +38,9 @@
         </a>
         <a href="{% url 'project-create' %}">
             <input type="button" value="New project">
+        </a>
+        <a href="{% url 'history-of-changes' %}">
+            <input type="button" value="History of changes">
         </a>
 
     </div>

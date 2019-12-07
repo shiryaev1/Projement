@@ -159,7 +159,7 @@ class HistoryOfChanges(models.Model):
         return f'Change in {self.project.title} project at {self.change_time}'
 
     def get_absolute_url(self):
-        return reverse('history-of-changes-detail', kwargs={'pk': self.project.pk, 'slug': slugify(self.project.title)})
+        return reverse('history-of-changes-detail', kwargs={'pk': self.pk, 'id': self.project.id})
 
 
 class InitialDataOfProject(models.Model):

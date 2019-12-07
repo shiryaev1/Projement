@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th width="12%">Change_delta_actual_design</th>
+                    <th width="12%">Resulting actual design</th>
+                    <th width="12%">Change delta actual development</th>
+                    <th width="12%">Resulting actual development</th>
+                    <th width="12%">Change delta actual testing</th>
+                    <th width="12%">Resulting actual testing</th>
+                    <th width="12%">Initial actual design</th>
+                    <th width="12%">Initial actual development</th>
+                    <th width="12%">Initial actual testing:</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for history in history_of_changes %}
+                    <tr>
+{#                        <td>#}
+{#                            {% spaceless %}#}
+{#                                <a href="{{ history.get_absolute_url }}">{{ history.project.title }}</a>#}
+{##}
+{#                            {% endspaceless %}#}
+{#                        </td>#}
+                        <td>{{ history.change_delta_actual_design }}</td>
+                        <td>{{ history.resulting_actual_design }}</td>
+                        <td>{{ history.change_delta_actual_development }}</td>
+                        <td>{{ history.resulting_actual_development }}</td>
+                        <td>{{ history.change_delta_actual_testing }}</td>
+                        <td>{{ history.resulting_actual_testing }}</td>
+                        {% for init in initial_data %}
+                            <td>{{ init.initial_actual_design }}</td>
+                            <td>{{ init.initial_actual_development }}</td>
+                            <td>{{ init.initial_actual_testing }}</td>
+                        {% endfor %}
+
+
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock content %}
