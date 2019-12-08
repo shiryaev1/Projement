@@ -13,6 +13,8 @@ from django.views.generic.list import ListView
 
 from markdown import markdown
 from itertools import chain
+
+from projects.filters import ProjectFilter
 from projects.forms import ProjectForm, TagForm, ProjectCreateForm
 from projects.models import Project, Tag, HistoryOfChanges, InitialDataOfProject
 
@@ -49,7 +51,7 @@ class DashboardView(LoginRequiredMixin, ListView):
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
-    template_name = 'projects/create_project.html'
+    # template_name = 'projects/create_project.html'
     form_class = ProjectCreateForm
     success_url = reverse_lazy('dashboard')
 
@@ -86,12 +88,16 @@ class HistoryOfChangesView(LoginRequiredMixin, ListView):
     context_object_name = 'history_of_changes'
     template_name = 'projects/history_of_changes.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(HistoryOfChangesView, self).get_context_data(**kwargs)
+        context['filter'] = ProjectFilter(self.request.GET, queryset=self.get_queryset())
+        return context
+
 
 class HistoryOfChangesDetailView(LoginRequiredMixin, ListView):
     template_name = 'projects/project_changes.html'
     model = HistoryOfChanges
     context_object_name = 'history_of_changes'
-
 
     def get_queryset(self):
         history_of_changes = HistoryOfChanges.objects.filter(
@@ -105,10 +111,8 @@ class HistoryOfChangesDetailView(LoginRequiredMixin, ListView):
         context = super(HistoryOfChangesDetailView, self).get_context_data(**kwargs)
         context['initial_data'] = InitialDataOfProject.objects.filter(
             project__id=self.request.resolver_match.kwargs['id'])
-        # pdb.set_trace()
-        # Add any other variables to the context here
-        ...
         return context
+
 
 class TagCreate(LoginRequiredMixin, CreateView):
     model = Tag

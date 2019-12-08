@@ -32,12 +32,18 @@
                         <td>{{ history.resulting_actual_development }}</td>
                         <td>{{ history.change_delta_actual_testing }}</td>
                         <td>{{ history.resulting_actual_testing }}</td>
-                        {% for init in initial_data %}
-                            <td>{{ init.initial_actual_design }}</td>
-                            <td>{{ init.initial_actual_development }}</td>
-                            <td>{{ init.initial_actual_testing }}</td>
-                        {% endfor %}
+                        {% if initial_data %}
+                            {% for init in initial_data %}
+                                    <td>{{ init.initial_actual_design }}</td>
+                                    <td>{{ init.initial_actual_development }}</td>
+                                    <td>{{ init.initial_actual_testing }}</td>
 
+                            {% endfor %}
+                        {% else %}
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                        {% endif %}
 
 
                     </tr>

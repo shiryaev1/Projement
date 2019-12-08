@@ -26,6 +26,11 @@ class ProjectCreateForm(forms.ModelForm):
             'tags',
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'CREATE'))
+
     def save(self, commit=True):
         projects = super(ProjectCreateForm, self).save(commit=False)
         projects.save()
