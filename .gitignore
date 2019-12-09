@@ -2,9 +2,9 @@ venv/
 myvenv/
 .idea
 share
-projement.bin
-projement.lib
-projement.lib64
+bin
+lib
+lib64
 *.pyc
 db.sqlite3
 
