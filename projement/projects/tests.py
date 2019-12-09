@@ -140,37 +140,15 @@ class TagTestCase(TestCase):
         })
         return project
 
-    # def test_save_history_of_changes(self):
-    #     company = create_company()
-    #     project = self.create_project()
-    #     tag = self.create_tag()
-    #     up = Project.objects.filter(id=1).update(actual_design=F('actual_design')+1)
-    #     # up.refresh_from_db()
-    #     self.assertEqual(up.id, 4)
+    def test_get_history_of_changes(self):
 
-        #
-        # update_project = self.authenticated_client.post(
-        #     reverse('project-update', kwargs={'pk': 1, 'slug': slugify('test-company')}),
-        #     {
-        #         'company': company,
-        #         'title': 'test-company',
-        #         'start_date': '2012-01-12',
-        #         'end_date': '',
-        #         'estimated_design': 1,
-        #         'actual_design': 45,
-        #         'estimated_development': 4,
-        #         'actual_development': 3,
-        #         'estimated_testing': 3,
-        #         'actual_testing': 4,
-        #         'tags': tag,
-        #         'additional_hour_design': '',
-        #         'additional_hour_development': '',
-        #         'additional_hour_testing': '',
-        #     }
-        # )
-        #
-        # pdb.set_trace()
-        # history = HistoryOfChanges.objects.get(project=update_project)
+        client = Client()
+        response = client.get('/history/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/login/?next=/history/')
+
+        response = self.authenticated_client.get('/history/')
+        self.assertEqual(response.status_code, 200)
 
     def test_tags_list_requires_authentication(self):
 

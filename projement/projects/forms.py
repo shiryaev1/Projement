@@ -42,7 +42,7 @@ class ProjectCreateForm(forms.ModelForm):
         )
         if self.cleaned_data['tags']:
             data_of_tag = DataOfTag.objects.create(
-                tag=projects.tags,
+                tag=self.cleaned_data.get('tags'),
                 project=projects,
                 time_to_add=timezone.now(),
             )
@@ -75,7 +75,7 @@ class ProjectForm(forms.ModelForm):
         projects.save()
         if self.cleaned_data['tags']:
             data_of_tag = DataOfTag.objects.create(
-                tag=self.cleaned_data.get('tags')._result_cache or None,
+                tag=self.cleaned_data.get('tags')._result_cache,
                 project=projects,
                 time_to_add=timezone.now(),
             )
@@ -87,8 +87,9 @@ class TagForm(forms.ModelForm):
 
     class Meta:
         model = Tag
-        fields = ['title',]
+        fields = ['title', ]
 
-        widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'CREATE'))

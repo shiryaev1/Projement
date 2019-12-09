@@ -1,4 +1,9 @@
 venv/
+myvenv/
 .idea
+projement.bin
+projement.lib
+projement.lib64
 *.pyc
 db.sqlite3
+

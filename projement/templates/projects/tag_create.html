@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-     <form action="{% url 'tag_create_url' %}" method="post">
+     <form action="{% url 'tag-create' %}" method="post">
         {% csrf_token %}
         {% for field in form %}
             <div class="form-group">
