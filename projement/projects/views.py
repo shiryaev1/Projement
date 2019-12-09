@@ -51,7 +51,6 @@ class DashboardView(LoginRequiredMixin, ListView):
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
-    # template_name = 'projects/create_project.html'
     form_class = ProjectCreateForm
     success_url = reverse_lazy('dashboard')
 
@@ -62,6 +61,7 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('dashboard')
 
     def post(self, request, *args, **kwargs):
+
         original = Project.objects.get(pk=kwargs['pk'])
 
         if float(original.actual_testing) != float(request.POST['actual_testing']) \

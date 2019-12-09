@@ -5,11 +5,15 @@
     <title>Title</title>
 </head>
 <body>
-     <form action="" class="form-delete" method="post">
-    {% csrf_token %}
-        <h3>Are you sure you want to delete <b>"{{ tag.title }}"</b>tag?</h3>
-        <a href="{% url 'tag-list' %}">Cancel</a>
-        <button type="submit" name="button" class="btn btn-danger">Delete</button>
-    </form>
+    <div class="card-body" style="align-items: center; justify-content: center; display: flex;">
+        <form method="post" action="{{ tag.get_delete_url }}">
+          {% csrf_token %}
+            <h1 class="h3 mb-3 font-weight-normal">Please, delete {{ tag.title }} tag</h1>
+
+
+              <button class="btn btn-lg btn-primary btn-block" type="submit">Delete</button>
+            <a href="{% url 'tag-list' %}">Back</a>
+        </form>
+    </div>
 </body>
 </html>

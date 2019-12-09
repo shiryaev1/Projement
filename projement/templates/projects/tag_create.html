@@ -3,26 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 </head>
 <body>
-     <form action="{% url 'tag-create' %}" method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="form-group">
-                {% if field.errors %}
-                    <div class="alert alert-danger">
-                        {{ field.errors }}
-                    </div>
-                {% endif %}
-                {{ field.label }}
-                {{ field }}
-            </div>
-        {% endfor %}
+    <div class="card-body" style="align-items: center; justify-content: center; display: flex;">
+        <form method="post" action="">
+          {% csrf_token %}
+            <h1 class="h3 mb-3 font-weight-normal">Please, write form field</h1>
+              <div class="form-group">
+                <label for="inputTitle" class="sr-only">Title</label>
+                {{ form.title }}
+              </div>
 
-
-        <button type="submit" class="btn btn-primary">Create</button>
-
-    </form>
-
+              <button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
+        </form>
+    </div>
 </body>
 </html>
