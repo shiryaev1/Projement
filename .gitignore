@@ -1,6 +1,7 @@
 venv/
 myvenv/
 .idea
+share
 projement.bin
 projement.lib
 projement.lib64
