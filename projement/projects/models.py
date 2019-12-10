@@ -2,7 +2,7 @@ import pdb
 import time
 
 from django.contrib.auth.models import User
-from django.db import models, transaction
+from django.db import models, transaction, OperationalError
 from django.db.models import F
 from django.urls import reverse
 from django.utils import timezone
@@ -77,42 +77,26 @@ class Project(models.Model):
                                          )
 
     tags = models.ManyToManyField('Tag', blank=True, default=None, null=True, related_name='project')
-    additional_hour_design = models.DecimalField(max_digits=7, decimal_places=2,
-                                                 validators=[
-                                                     MaxValueValidator(10000),
-                                                     MinValueValidator(0),
-                                                 ], default=0)
-    additional_hour_development = models.DecimalField(max_digits=7,
-                                                      decimal_places=2,
-                                                      validators=[
-                                                          MaxValueValidator(10000),
-                                                          MinValueValidator(0),
-                                                      ], default=0)
-    additional_hour_testing = models.DecimalField(max_digits=7, decimal_places=2,
-                                                  validators=[
-                                                      MaxValueValidator(10000),
-                                                      MinValueValidator(0),
-                                                  ], default=0)
+    # additional_hour_design = models.DecimalField(max_digits=7, decimal_places=2,
+    #                                              validators=[
+    #                                                  MaxValueValidator(10000),
+    #                                                  MinValueValidator(0),
+    #                                              ], default=0)
+    # additional_hour_development = models.DecimalField(max_digits=7,
+    #                                                   decimal_places=2,
+    #                                                   validators=[
+    #                                                       MaxValueValidator(10000),
+    #                                                       MinValueValidator(0),
+    #                                                   ], default=0)
+    # additional_hour_testing = models.DecimalField(max_digits=7, decimal_places=2,
+    #                                               validators=[
+    #                                                   MaxValueValidator(10000),
+    #                                                   MinValueValidator(0),
+    #                                               ], default=0)
+
 
     def __str__(self):
         return self.title
-
-    # def save(self, *args, **kwargs):
-    #     project = Project.objects.get(id=self.id)
-    #     project.refresh_from_db()
-    #     project.additional_hour_development = F('additional_hour_development')
-    #     project.additional_hour_testing = F('additional_hour_testing')
-    #     project.additional_hour_design = F('additional_hour_design')
-    #     super(Project, self).save(*args, **kwargs)
-    def save(self, *args, **kwargs):
-        with transaction.atomic():
-            project = (
-                Project.objects.select_for_update().get(id=self.id)
-            )
-            project.additional_hour_design = F('additional_hour_design')
-            project.additional_hour_testing = F('additional_hour_testing')
-            project.additional_hour_development = F('additional_hour_development')
-        super(Project, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('project-update', kwargs={'pk': self.pk, 'slug': slugify(self.title)})
@@ -128,9 +112,9 @@ class Project(models.Model):
     @property
     def total_actual_hours(self):
         return self.actual_design + self.actual_development +\
-               self.actual_testing +\
-               self.additional_hour_design +\
-               self.additional_hour_development + self.additional_hour_testing
+               self.actual_testing
+               # self.additional_hour_design +\
+               # self.additional_hour_development + self.additional_hour_testing
 
     @property
     def is_over_budget(self):

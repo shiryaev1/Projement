@@ -1,8 +1,11 @@
+import decimal
 import os
 import pdb
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import F
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls.base import reverse_lazy
 from django.utils import timezone
@@ -63,6 +66,9 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     def post(self, request, *args, **kwargs):
 
         original = Project.objects.get(pk=kwargs['pk'])
+        # original.additional_hour_design += Project.objects.get(
+        #     id=original.id
+        # ).additional_hour_design + decimal.Decimal(request.POST['actual_design'])
 
         if float(original.actual_testing) != float(request.POST['actual_testing']) \
                 or float(original.actual_development) != float(request.POST['actual_development']) \
@@ -80,7 +86,20 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
                 owner=request.user
             )
 
-        return super(ProjectUpdateView, self).post(request, *args, **kwargs)
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            self.object = form.save()
+            original.actual_design += decimal.Decimal(
+                request.POST['additional_hour_design'])
+            original.actual_testing += decimal.Decimal(
+                request.POST['additional_hour_testing'])
+            original.actual_development += decimal.Decimal(
+                request.POST['additional_hour_development'])
+            original.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return self.form_invalid(form)
 
 
 class HistoryOfChangesView(LoginRequiredMixin, ListView):
