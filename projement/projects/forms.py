@@ -33,22 +33,22 @@ class ProjectCreateForm(forms.ModelForm):
         self.helper.add_input(Submit('submit', 'CREATE'))
 
     def save(self, commit=True):
-        projects = super(ProjectCreateForm, self).save(commit=False)
-        projects.save()
+        project = super(ProjectCreateForm, self).save(commit=False)
+        project.save()
         initial_data_of_project = InitialDataOfProject.objects.get_or_create(
-            initial_actual_design=projects.actual_design,
-            initial_actual_development=projects.actual_development,
-            initial_actual_testing=projects.actual_testing,
-            project=projects
+            initial_actual_design=project.actual_design,
+            initial_actual_development=project.actual_development,
+            initial_actual_testing=project.actual_testing,
+            project=project
         )
         if self.cleaned_data['tags']:
             data_of_tag = DataOfTag.objects.create(
                 tag=self.cleaned_data.get('tags')._result_cache,
-                project=projects,
+                project=project,
                 time_to_add=timezone.now(),
             )
 
-        return projects
+        return project
 
 
 class ProjectForm(forms.ModelForm):
@@ -71,16 +71,16 @@ class ProjectForm(forms.ModelForm):
         self.helper.add_input(Submit('submit', 'UPDATE'))
 
     def save(self, commit=True):
-        projects = super(ProjectForm, self).save(commit=False)
-        projects.save()
+        project = super(ProjectForm, self).save(commit=False)
+        project.save()
         if self.cleaned_data['tags']:
             data_of_tag = DataOfTag.objects.create(
                 tag=self.cleaned_data.get('tags')._result_cache,
-                project=projects,
+                project=project,
                 time_to_add=timezone.now(),
             )
 
-        return projects
+        return project
 
 
 class TagForm(forms.ModelForm):

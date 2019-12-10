@@ -74,7 +74,7 @@ DATABASES = {
         'NAME': 'projement',
         'USER': 'proj_owner',
         'PASSWORD': 'password',
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

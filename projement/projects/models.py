@@ -103,7 +103,16 @@ class Project(models.Model):
     #     project.additional_hour_development = F('additional_hour_development')
     #     project.additional_hour_testing = F('additional_hour_testing')
     #     project.additional_hour_design = F('additional_hour_design')
-
+    #     super(Project, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            project = (
+                Project.objects.select_for_update().get(id=self.id)
+            )
+            project.additional_hour_design = F('additional_hour_design')
+            project.additional_hour_testing = F('additional_hour_testing')
+            project.additional_hour_development = F('additional_hour_development')
+        super(Project, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('project-update', kwargs={'pk': self.pk, 'slug': slugify(self.title)})
