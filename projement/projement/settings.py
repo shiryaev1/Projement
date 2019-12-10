@@ -15,7 +15,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'auth.User'
 # Application definition
 
 
@@ -31,7 +30,6 @@ INSTALLED_APPS = [
     'django_filters',
     'django_pdb',
     'projects',
-    # 'auth',
 ]
 
 MIDDLEWARE = [
@@ -76,7 +74,7 @@ DATABASES = {
         'NAME': 'projement',
         'USER': 'proj_owner',
         'PASSWORD': 'password',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }

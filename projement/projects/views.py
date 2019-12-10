@@ -90,7 +90,7 @@ class HistoryOfChangesView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(HistoryOfChangesView, self).get_context_data(**kwargs)
-        context['filter'] = ProjectFilter(self.request.GET, queryset=self.get_queryset())
+        context['filter'] = ProjectFilter(self.request.GET, queryset=self.get_queryset().order_by('-id'))
         return context
 
 

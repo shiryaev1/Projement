@@ -2,9 +2,10 @@ FROM python:3.7
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-
-WORKDIR projement/
+ADD . /src/
+WORKDIR /src/
+#WORKDIR projement/
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-COPY projement /projement/
+#COPY projement /projement/
