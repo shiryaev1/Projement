@@ -186,14 +186,12 @@ class TagTestCase(TestCase):
 
         client = Client()
         tag = self.create_tag()
-        # pdb.set_trace()
         response = client.post(
             reverse('tag-edit', kwargs={'pk': tag.id}),
             {
                 'title': 'django',
             }
         )
-        self.assertEqual(tag.id, not None)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f'/login/?next=/tag/{tag.id}/edit/')
 

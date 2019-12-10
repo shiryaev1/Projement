@@ -1,13 +1,13 @@
 import pdb
+import time
 
 from django.contrib.auth.models import User
 from django.db import models, transaction
+from django.db.models import F
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db.models import Count, F
-from projects.get_request import get_request
 
 
 class Company(models.Model):
@@ -96,6 +96,14 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+    # def save(self, *args, **kwargs):
+    #     project = Project.objects.get(id=self.id)
+    #     project.refresh_from_db()
+    #     project.additional_hour_development = F('additional_hour_development')
+    #     project.additional_hour_testing = F('additional_hour_testing')
+    #     project.additional_hour_design = F('additional_hour_design')
+
 
     def get_absolute_url(self):
         return reverse('project-update', kwargs={'pk': self.pk, 'slug': slugify(self.title)})
