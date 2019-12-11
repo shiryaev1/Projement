@@ -73,17 +73,18 @@ class ProjectForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'UPDATE'))
 
-    # def save(self, *args, **kwargs):
-    #     project = Project.objects.get(id=self.instance.pk)
-    # #     project.save()
-    #     if self.cleaned_data['tags']:
-    #         data_of_tag = DataOfTag.objects.create(
-    #             tag=self.cleaned_data.get('tags')._result_cache,
-    #             project=project,
-    #             time_to_add=timezone.now(),
-    #         )
-    #     project.save()
-    #     return project
+    def save(self, commit=True):
+        project = super(ProjectForm, self).save(commit=False)
+        # project.additional_hour_testing = F('additional_hour_testing') + self.additional_hour_testing
+        project.save()
+        if self.cleaned_data['tags']:
+            data_of_tag = DataOfTag.objects.create(
+                tag=self.cleaned_data.get('tags')._result_cache,
+                project=project,
+                time_to_add=timezone.now(),
+            )
+
+        return project
 
 
 class TagForm(forms.ModelForm):
