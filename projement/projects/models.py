@@ -78,6 +78,16 @@ class Project(models.Model):
 
     tags = models.ManyToManyField('Tag', blank=True, default=None, related_name='project')
 
+    # def save(self, *args, **kwargs):
+    #     project = Project.objects.get(id=self.id)
+    #     tags = Tag.objects.filter(project=project)
+    #     if self.tags != tags:
+    #         DataOfTag.objects.create(
+    #                     tag=self.tags,
+    #                     project=project,
+    #                     time_to_add=timezone.now(),
+    #                 )
+
     def __str__(self):
         return self.title
 
