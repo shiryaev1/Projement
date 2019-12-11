@@ -90,11 +90,14 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
         form = self.get_form()
         if form.is_valid():
             self.object = form.save()
-            original.actual_design += decimal.Decimal(
-                request.POST['additional_hour_design'])
-            original.actual_testing += decimal.Decimal(
-                request.POST['additional_hour_testing'])
-            original.actual_development += decimal.Decimal(
+            if request.POST['additional_hour_design']:
+                original.actual_design += decimal.Decimal(
+                    request.POST['additional_hour_design'])
+            if request.POST['additional_hour_testing']:
+                original.actual_testing += decimal.Decimal(
+                    request.POST['additional_hour_testing'])
+            if request.POST['additional_hour_development']:
+                original.actual_development += decimal.Decimal(
                 request.POST['additional_hour_development'])
             original.save()
             return HttpResponseRedirect(self.get_success_url())
