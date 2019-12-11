@@ -19,7 +19,8 @@ from itertools import chain
 
 from projects.filters import ProjectFilter
 from projects.forms import ProjectForm, TagForm, ProjectCreateForm
-from projects.models import Project, Tag, HistoryOfChanges, InitialDataOfProject
+from projects.models import Project, Tag, HistoryOfChanges, \
+    InitialDataOfProject, DataOfTag
 
 
 class AssignmentView(TemplateView):
@@ -44,11 +45,8 @@ class DashboardView(LoginRequiredMixin, ListView):
     template_name = 'projects/dashboard.html'
 
     def get_queryset(self):
-        end_projects = Project.objects.filter(
-            end_date__isnull=False).order_by('-end_date')
-        active_projects = Project.objects.filter(end_date__isnull=True).order_by('-start_date')
-        projects = list(chain(active_projects, end_projects))
-
+        projects = Project.objects.order_by(
+            F('end_date').desc(nulls_first=True))
         return projects
 
 
@@ -66,9 +64,6 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     def post(self, request, *args, **kwargs):
 
         original = Project.objects.get(pk=kwargs['pk'])
-        # original.additional_hour_design += Project.objects.get(
-        #     id=original.id
-        # ).additional_hour_design + decimal.Decimal(request.POST['actual_design'])
 
         if float(original.actual_testing) != float(request.POST['actual_testing']) \
                 or float(original.actual_development) != float(request.POST['actual_development']) \
