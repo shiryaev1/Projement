@@ -3,7 +3,7 @@ from django.conf.urls import url
 from projects import views
 from projects.views import AssignmentView, DashboardView, ProjectUpdateView, \
     TagCreate, TagEditView, TagDeleteView, ProjectCreateView, \
-    HistoryOfChangesView, HistoryOfChangesDetailView
+    HistoryOfChangesView, HistoryOfChangesDetailView, TagAddingHistoryView
 from projects.export import export_projects_xls
 
 urlpatterns = [
@@ -24,6 +24,8 @@ urlpatterns = [
         name='tag-edit'),
     url(r'^tag/(?P<pk>\d+)/delete/$',
         TagDeleteView.as_view(), name='tag-delete'),
+    url(r'^tags/adding-history/$', TagAddingHistoryView.as_view(),
+        name='tag_adding_history'),
     url(r'^tags/$', views.tags_list_view, name='tag-list'),
     url(r'^export/excel/$', export_projects_xls, name='export_excel')
 ]

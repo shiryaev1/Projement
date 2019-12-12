@@ -190,6 +190,12 @@ class TagDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('tag-list')
 
 
+class TagAddingHistoryView(LoginRequiredMixin, ListView):
+    template_name = 'projects/tag_adding_history.html'
+    model = TagAddingHistory
+    context_object_name = 'tag_adding_history'
+
+
 def tags_list_view(request):
     tags = Tag.objects.all()
     return render(request, 'projects/tags_list.html', {'tags': tags})

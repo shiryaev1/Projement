@@ -1,8 +1,14 @@
-
+from django import forms
 from django.contrib import admin
+from django.contrib.admin.views.main import ChangeList
 
+from projects.forms import TagChangeListForm
 from projects.models import Company, Project, Tag, TagAddingHistory, HistoryOfChanges, \
     InitialDataOfProject
+
+
+class TagInline(admin.TabularInline):
+    model = Project.tags.through
 
 
 class ActualCompanyListFilter(admin.SimpleListFilter):
@@ -21,9 +27,10 @@ class ActualCompanyListFilter(admin.SimpleListFilter):
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'company', 'start_date', 'end_date',)
+    inlines = (TagInline,)
+    list_display = ('title', 'company', 'start_date', 'end_date', )
     list_filter = ('company__name',  ActualCompanyListFilter,)
-    ordering = ('-start_date',)
+    ordering = ('-start_date', )
 
     fieldsets = (
      (None, {'fields': [
@@ -44,6 +51,12 @@ class ProjectAdmin(admin.ModelAdmin):
          'actual_testing'
      ]}),
     )
+
+    # def get_changelist(self, request, **kwargs):
+    #     return MovieChangeList
+    #
+    # def get_changelist_form(self, request, **kwargs):
+    #     return BookForm
 
     def get_readonly_fields(self, request, obj=None):
         if obj is None:

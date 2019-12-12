@@ -13,11 +13,6 @@
                     <th width="12%">Owner</th>
                     <th width="12%">Change time</th>
                     <th width="12%">Changes</th>
-{#                    <th width="12%">Resulting actual design</th>#}
-{#                    <th width="12%">Change delta actual development</th>#}
-{#                    <th width="12%">Resulting actual development:</th>#}
-{#                    <th width="12%">Change delta actual testing</th>#}
-{#                    <th width="12%">Resulting actual testing</th>#}
                 </tr>
             </thead>
             <tbody>
@@ -32,11 +27,6 @@
                         <td>{{ history.owner }}</td>
                         <td>{{ history.change_time }}</td>
                         <td><a href="{{ history.get_absolute_url }}">view changes</a></td>
-{#                        <td>{{ history.resulting_actual_design }}</td>#}
-{#                        <td>{{ history.change_delta_actual_development }}</td>#}
-{#                        <td>{{ history.resulting_actual_development }}</td>#}
-{#                        <td>{{ history.change_delta_actual_testing }}</td>#}
-{#                        <td>{{ history.resulting_actual_testing }}</td>#}
                     </tr>
                 {% endfor %}
             </tbody>
