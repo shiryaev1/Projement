@@ -78,12 +78,12 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         original = Project.objects.get(pk=kwargs['pk'])
 
-        if str(
-            request.POST['additional_hour_testing']) != '0' \
-            or str(
-            request.POST['additional_hour_development']) != '0' \
-            or str(
-            request.POST['additional_hour_design']) != '0':
+        if decimal.Decimal(
+            request.POST['additional_hour_testing']) != decimal.Decimal(0) \
+            or decimal.Decimal(
+            request.POST['additional_hour_development']) != decimal.Decimal(0) \
+            or decimal.Decimal(
+            request.POST['additional_hour_design']) != decimal.Decimal(0):
 
             HistoryOfChanges.objects.get_or_create(
                 change_delta_actual_design=decimal.Decimal(

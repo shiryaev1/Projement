@@ -63,6 +63,11 @@ class ProjectForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['actual_design'].widget.attrs['readonly'] = True
+            self.fields['actual_development'].widget.attrs['readonly'] = True
+            self.fields['actual_testing'].widget.attrs['readonly'] = True
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'UPDATE'))
 
