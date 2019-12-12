@@ -32,22 +32,26 @@ class ProjectCreateForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'CREATE'))
 
+    def clean(self):
+        cleaned_data = super(ProjectCreateForm, self).clean()
+        if self.instance.pk is not None:
+            if self.initial['tags'] != list(cleaned_data['tags']):
+                DataOfTag.objects.create(
+                    tag=list(cleaned_data['tags']),
+                    project=self.instance,
+                    time_to_add=timezone.now(),
+                )
+        return cleaned_data
+
     def save(self, commit=True):
         project = super(ProjectCreateForm, self).save(commit=False)
         project.save()
-        initial_data_of_project = InitialDataOfProject.objects.get_or_create(
+        InitialDataOfProject.objects.get_or_create(
             initial_actual_design=project.actual_design,
             initial_actual_development=project.actual_development,
             initial_actual_testing=project.actual_testing,
             project=project
         )
-        if self.cleaned_data['tags']:
-            data_of_tag = DataOfTag.objects.create(
-                tag=self.cleaned_data.get('tags')._result_cache,
-                project=project,
-                time_to_add=timezone.now(),
-            )
-
         return project
 
 
