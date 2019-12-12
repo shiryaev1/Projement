@@ -88,24 +88,18 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
             HistoryOfChanges.objects.get_or_create(
                 change_delta_actual_design=decimal.Decimal(
                     request.POST['additional_hour_design']
-                ) + decimal.Decimal(
-                    original.actual_design) - decimal.Decimal(
-                    original.actual_design),
+                ),
                 resulting_actual_design=decimal.Decimal(
                     request.POST['additional_hour_design']) + original.actual_design,
 
                 change_delta_actual_development=decimal.Decimal(
-                    request.POST['additional_hour_development']) +
-                                                original.actual_development -
-                                                original.actual_development,
+                    request.POST['additional_hour_development']),
 
                 resulting_actual_development=decimal.Decimal(
                     request.POST['additional_hour_development']) + original.actual_development,
 
                 change_delta_actual_testing=decimal.Decimal(
-                    request.POST['additional_hour_testing']) +
-                                            original.actual_testing -
-                                            original.actual_testing,
+                    request.POST['additional_hour_testing']),
 
                 resulting_actual_testing=decimal.Decimal(
                     request.POST['additional_hour_testing']) + original.actual_testing,
