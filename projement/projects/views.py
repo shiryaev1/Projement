@@ -76,42 +76,66 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('dashboard')
 
     def post(self, request, *args, **kwargs):
-
         original = Project.objects.get(pk=kwargs['pk'])
 
-        if float(original.actual_testing) != float(request.POST['actual_testing']) \
-                or float(original.actual_development) != float(request.POST['actual_development']) \
-                or float(original.actual_design) != float(request.POST['actual_design']):
+        if decimal.Decimal(original.actual_testing) != decimal.Decimal(
+            request.POST['actual_testing']) \
+            or decimal.Decimal(original.actual_development) != decimal.Decimal(
+            request.POST['actual_development']) \
+            or decimal.Decimal(original.actual_design) != decimal.Decimal(
+            request.POST['actual_design']):
 
             HistoryOfChanges.objects.get_or_create(
-                change_delta_actual_design=float(request.POST['actual_design']) - float(original.actual_design),
-                resulting_actual_design=float(request.POST['actual_design']),
-                change_delta_actual_development=float(request.POST['actual_development']) - float(original.actual_development),
-                resulting_actual_development=float(request.POST['actual_development']),
-                change_delta_actual_testing=float(request.POST['actual_testing']) - float(original.actual_testing),
-                resulting_actual_testing=float(request.POST['actual_testing']),
+                change_delta_actual_design=decimal.Decimal(
+                    request.POST['actual_design']) - decimal.Decimal(
+                    original.actual_design
+                ),
+                resulting_actual_design=decimal.Decimal(
+                    request.POST['actual_design']
+                ),
+                change_delta_actual_development=decimal.Decimal(
+                    request.POST['actual_development']) - decimal.Decimal(
+                    original.actual_development
+                ),
+                resulting_actual_development=decimal.Decimal(
+                    request.POST['actual_development']
+                ),
+                change_delta_actual_testing=decimal.Decimal(
+                    request.POST['actual_testing']) -
+                    decimal.Decimal(original.actual_testing),
+                resulting_actual_testing=decimal.Decimal(
+                    request.POST['actual_testing']),
                 change_time=timezone.now(),
                 project=original,
                 owner=request.user
             )
+        return super(ProjectUpdateView, self).post(request, *args, **kwargs)
+
+    def form_valid(self, form):
         self.object = self.get_object()
         form = self.get_form()
+        original = Project.objects.get(pk=self.object.pk)
 
         if form.is_valid():
+            original.actual_design = form.cleaned_data['actual_design']
+            original.actual_development = form.cleaned_data['actual_development']
+            original.actual_testing = form.cleaned_data['actual_testing']
             self.object = form.save()
 
-            if request.POST['additional_hour_design']:
+            if form.cleaned_data['additional_hour_design']:
                 original.actual_design += decimal.Decimal(
-                    request.POST['additional_hour_design'])
-            if request.POST['additional_hour_testing']:
+                    form.cleaned_data['additional_hour_design'])
+            if form.cleaned_data['additional_hour_testing']:
                 original.actual_testing += decimal.Decimal(
-                    request.POST['additional_hour_testing'])
-            if request.POST['additional_hour_development']:
+                    form.cleaned_data['additional_hour_testing'])
+            if form.cleaned_data['additional_hour_development']:
                 original.actual_development += decimal.Decimal(
-                request.POST['additional_hour_development'])
+                form.cleaned_data['additional_hour_development'])
             original.save()
+
             return HttpResponseRedirect(self.get_success_url())
         else:
+
             return self.form_invalid(form)
 
 

@@ -52,16 +52,16 @@ class ProjectForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'UPDATE'))
 
-    def clean(self):
-        cleaned_data = super(ProjectForm, self).clean()
-        if self.instance.pk is not None:
-            if self.initial['tags'] != list(cleaned_data['tags']):
-                TagAddingHistory.objects.create(
-                    tag=list(cleaned_data['tags']),
-                    project=self.instance,
-                    time_to_add=timezone.now(),
-                )
-        return cleaned_data
+    # def clean(self):
+    #     cleaned_data = super(ProjectForm, self).clean()
+    #     if self.instance.pk is not None:
+    #         if self.initial['tags'] != list(cleaned_data['tags']):
+    #             TagAddingHistory.objects.create(
+    #                 tag=list(cleaned_data['tags']),
+    #                 project=self.instance,
+    #                 time_to_add=timezone.now(),
+    #             )
+    #     return cleaned_data
 
 
 class TagForm(forms.ModelForm):
