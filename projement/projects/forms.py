@@ -45,9 +45,9 @@ class ProjectCreateForm(forms.ModelForm):
 
 
 class ProjectForm(forms.ModelForm):
-    additional_hour_design = forms.DecimalField(required=False)
-    additional_hour_development = forms.DecimalField(required=False)
-    additional_hour_testing = forms.DecimalField(required=False)
+    additional_hour_design = forms.DecimalField(required=False, initial=0)
+    additional_hour_development = forms.DecimalField(required=False, initial=0)
+    additional_hour_testing = forms.DecimalField(required=False, initial=0)
 
     class Meta:
         model = Project
@@ -65,16 +65,6 @@ class ProjectForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'UPDATE'))
-
-    # def clean_tags(self):
-    #     clean_tag = list(self.cleaned_data['tags'])
-    #     if self.initial['tags'] != clean_tag:
-    #         TagAddingHistory.objects.create(
-    #             tag=list(self.cleaned_data['tags']),
-    #             project=self.instance,
-    #             time_to_add=timezone.now(),
-    #         )
-    #     return clean_tag
 
 
 class TagForm(forms.ModelForm):

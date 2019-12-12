@@ -78,33 +78,37 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         original = Project.objects.get(pk=kwargs['pk'])
 
-        if decimal.Decimal(original.actual_testing) != decimal.Decimal(
-            request.POST['actual_testing']) \
-            or decimal.Decimal(original.actual_development) != decimal.Decimal(
-            request.POST['actual_development']) \
-            or decimal.Decimal(original.actual_design) != decimal.Decimal(
-            request.POST['actual_design']):
+        if str(
+            request.POST['additional_hour_testing']) != '0' \
+            or str(
+            request.POST['additional_hour_development']) != '0' \
+            or str(
+            request.POST['additional_hour_design']) != '0':
 
             HistoryOfChanges.objects.get_or_create(
                 change_delta_actual_design=decimal.Decimal(
-                    request.POST['actual_design']) - decimal.Decimal(
-                    original.actual_design
-                ),
+                    request.POST['additional_hour_design']
+                ) + decimal.Decimal(
+                    original.actual_design) - decimal.Decimal(
+                    original.actual_design),
                 resulting_actual_design=decimal.Decimal(
-                    request.POST['actual_design']
-                ),
+                    request.POST['additional_hour_design']) + original.actual_design,
+
                 change_delta_actual_development=decimal.Decimal(
-                    request.POST['actual_development']) - decimal.Decimal(
-                    original.actual_development
-                ),
+                    request.POST['additional_hour_development']) +
+                                                original.actual_development -
+                                                original.actual_development,
+
                 resulting_actual_development=decimal.Decimal(
-                    request.POST['actual_development']
-                ),
+                    request.POST['additional_hour_development']) + original.actual_development,
+
                 change_delta_actual_testing=decimal.Decimal(
-                    request.POST['actual_testing']) -
-                    decimal.Decimal(original.actual_testing),
+                    request.POST['additional_hour_testing']) +
+                                            original.actual_testing -
+                                            original.actual_testing,
+
                 resulting_actual_testing=decimal.Decimal(
-                    request.POST['actual_testing']),
+                    request.POST['additional_hour_testing']) + original.actual_testing,
                 change_time=timezone.now(),
                 project=original,
                 owner=request.user
@@ -117,10 +121,9 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
         original = Project.objects.get(pk=self.object.pk)
 
         if form.is_valid():
-            original.actual_design = form.cleaned_data['actual_design']
-            original.actual_development = form.cleaned_data['actual_development']
-            original.actual_testing = form.cleaned_data['actual_testing']
-            if list(original.tags.distinct()) != list(form.cleaned_data['tags']):
+
+            if list(original.tags.distinct()) != list(
+                    form.cleaned_data['tags']):
                 TagAddingHistory.objects.create(
                     tag=list(form.cleaned_data['tags']),
                     project=self.object,
@@ -136,7 +139,7 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
                     form.cleaned_data['additional_hour_testing'])
             if form.cleaned_data['additional_hour_development']:
                 original.actual_development += decimal.Decimal(
-                form.cleaned_data['additional_hour_development'])
+                    form.cleaned_data['additional_hour_development'])
             original.save()
 
             return HttpResponseRedirect(self.get_success_url())
