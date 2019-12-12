@@ -1,13 +1,10 @@
-import pdb
-
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Button
-from django.db.models import F
+from crispy_forms.layout import Submit
 from django.utils import timezone
 
-from projects.models import Project, Tag, DataOfTag, InitialDataOfProject
+from projects.models import Project, Tag, TagAddingHistory, InitialDataOfProject
 
 
 class ProjectCreateForm(forms.ModelForm):
@@ -31,28 +28,6 @@ class ProjectCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'CREATE'))
-
-    def clean(self):
-        cleaned_data = super(ProjectCreateForm, self).clean()
-        if self.instance.pk is not None:
-            if self.initial['tags'] != list(cleaned_data['tags']):
-                DataOfTag.objects.create(
-                    tag=list(cleaned_data['tags']),
-                    project=self.instance,
-                    time_to_add=timezone.now(),
-                )
-        return cleaned_data
-
-    def save(self, commit=True):
-        project = super(ProjectCreateForm, self).save(commit=False)
-        project.save()
-        InitialDataOfProject.objects.get_or_create(
-            initial_actual_design=project.actual_design,
-            initial_actual_development=project.actual_development,
-            initial_actual_testing=project.actual_testing,
-            project=project
-        )
-        return project
 
 
 class ProjectForm(forms.ModelForm):
@@ -81,7 +56,7 @@ class ProjectForm(forms.ModelForm):
         cleaned_data = super(ProjectForm, self).clean()
         if self.instance.pk is not None:
             if self.initial['tags'] != list(cleaned_data['tags']):
-                DataOfTag.objects.create(
+                TagAddingHistory.objects.create(
                     tag=list(cleaned_data['tags']),
                     project=self.instance,
                     time_to_add=timezone.now(),

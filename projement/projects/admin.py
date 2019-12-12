@@ -1,7 +1,7 @@
 
 from django.contrib import admin
 
-from projects.models import Company, Project, Tag, DataOfTag, HistoryOfChanges, \
+from projects.models import Company, Project, Tag, TagAddingHistory, HistoryOfChanges, \
     InitialDataOfProject
 
 
@@ -97,6 +97,6 @@ class InitialDataOfProjectAdmin(admin.ModelAdmin):
 admin.site.register(Company)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Tag)
-admin.site.register(DataOfTag)
+admin.site.register(TagAddingHistory)
 admin.site.register(HistoryOfChanges, HistoryOfChangesAdmin)
 admin.site.register(InitialDataOfProject, InitialDataOfProjectAdmin)

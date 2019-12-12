@@ -18,7 +18,7 @@ from markdown import markdown
 from projects.filters import ProjectFilter
 from projects.forms import ProjectForm, TagForm, ProjectCreateForm
 from projects.models import Project, Tag, HistoryOfChanges, \
-    InitialDataOfProject, DataOfTag
+    InitialDataOfProject, TagAddingHistory
 
 
 class AssignmentView(TemplateView):
@@ -44,7 +44,7 @@ class DashboardView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         projects = Project.objects.order_by(
-            F('end_date').desc(nulls_first=True)).order_by('-start_date')
+            F('end_date').desc(nulls_first=True))
         return projects
 
 
@@ -52,6 +52,22 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
     form_class = ProjectCreateForm
     success_url = reverse_lazy('dashboard')
+
+    def form_valid(self, form):
+        if form.is_valid():
+            self.object = form.save()
+            InitialDataOfProject.objects.get_or_create(
+                initial_actual_design=form.cleaned_data['actual_design'],
+                initial_actual_development=form.cleaned_data['actual_development'],
+                initial_actual_testing=form.cleaned_data['actual_testing'],
+                project=self.object
+            )
+            TagAddingHistory.objects.create(
+                tag=list(form.cleaned_data.get('tags')),
+                project=self.object,
+                time_to_add=timezone.now(),
+            )
+            return super().form_valid(form)
 
 
 class ProjectUpdateView(LoginRequiredMixin, UpdateView):
@@ -78,7 +94,6 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
                 project=original,
                 owner=request.user
             )
-        # return super(ProjectUpdateView, self).post(request, *args, **kwargs)
         self.object = self.get_object()
         form = self.get_form()
 

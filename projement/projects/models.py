@@ -112,7 +112,7 @@ class Tag(models.Model):
         return self.title
 
 
-class DataOfTag(models.Model):
+class TagAddingHistory(models.Model):
     tag = models.CharField(max_length=240)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     time_to_add = models.TimeField()
