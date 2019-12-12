@@ -1,6 +1,5 @@
 import decimal
 import os
-import pdb
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,7 +14,6 @@ from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic.list import ListView
 
 from markdown import markdown
-from itertools import chain
 
 from projects.filters import ProjectFilter
 from projects.forms import ProjectForm, TagForm, ProjectCreateForm
@@ -46,7 +44,7 @@ class DashboardView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         projects = Project.objects.order_by(
-            F('end_date').desc(nulls_first=True))
+            F('end_date').desc(nulls_first=True)).order_by('-start_date')
         return projects
 
 
@@ -80,11 +78,13 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
                 project=original,
                 owner=request.user
             )
-
+        # return super(ProjectUpdateView, self).post(request, *args, **kwargs)
         self.object = self.get_object()
         form = self.get_form()
+
         if form.is_valid():
             self.object = form.save()
+
             if request.POST['additional_hour_design']:
                 original.actual_design += decimal.Decimal(
                     request.POST['additional_hour_design'])

@@ -43,11 +43,6 @@ class ProjectAdmin(admin.ModelAdmin):
          'actual_development',
          'actual_testing'
      ]}),
-     ('Additional hours', {'fields': [
-         'additional_hour_design',
-         'additional_hour_development',
-         'additional_hour_testing'
-     ]})
     )
 
     def get_readonly_fields(self, request, obj=None):

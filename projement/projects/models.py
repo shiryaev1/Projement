@@ -22,14 +22,11 @@ class Company(models.Model):
 
 
 class Project(models.Model):
-
     company = models.ForeignKey('projects.Company', on_delete=models.PROTECT,
                                 related_name='projects')
-
     title = models.CharField('Project title', max_length=128)
     start_date = models.DateField('Project start date', blank=True, null=True)
     end_date = models.DateField('Project end date', blank=True, null=True)
-
     estimated_design = models.DecimalField('Estimated design hours',
                                            max_digits=7, decimal_places=2,
                                            validators=[
@@ -44,7 +41,6 @@ class Project(models.Model):
                                             MinValueValidator(0),
                                         ]
                                         )
-
     estimated_development = models.DecimalField('Estimated development hours',
                                                 max_digits=7, decimal_places=2,
                                                 validators=[
@@ -60,7 +56,6 @@ class Project(models.Model):
                                                  MinValueValidator(0),
                                              ]
                                              )
-
     estimated_testing = models.DecimalField('Estimated testing hours',
                                             max_digits=7, decimal_places=2,
                                             validators=[
@@ -75,7 +70,6 @@ class Project(models.Model):
                                              MinValueValidator(0),
                                          ]
                                          )
-
     tags = models.ManyToManyField('Tag', blank=True, default=None, related_name='project')
 
     def __str__(self):
