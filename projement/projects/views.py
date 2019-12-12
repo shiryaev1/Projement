@@ -120,6 +120,12 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
             original.actual_design = form.cleaned_data['actual_design']
             original.actual_development = form.cleaned_data['actual_development']
             original.actual_testing = form.cleaned_data['actual_testing']
+            if list(original.tags.distinct()) != list(form.cleaned_data['tags']):
+                TagAddingHistory.objects.create(
+                    tag=list(form.cleaned_data['tags']),
+                    project=self.object,
+                    time_to_add=timezone.now(),
+                )
             self.object = form.save()
 
             if form.cleaned_data['additional_hour_design']:

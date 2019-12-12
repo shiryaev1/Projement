@@ -1,11 +1,13 @@
+
 from django import forms
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.forms.utils import flatatt
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 
-from projects.models import Project, Tag
+from projects.models import Project, Tag, TagAddingHistory
 
 
 class TagChangeListForm(forms.CheckboxSelectMultiple):
@@ -64,16 +66,15 @@ class ProjectForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'UPDATE'))
 
-    # def clean(self):
-    #     cleaned_data = super(ProjectForm, self).clean()
-    #     if self.instance.pk is not None:
-    #         if self.initial['tags'] != list(cleaned_data['tags']):
-    #             TagAddingHistory.objects.create(
-    #                 tag=list(cleaned_data['tags']),
-    #                 project=self.instance,
-    #                 time_to_add=timezone.now(),
-    #             )
-    #     return cleaned_data
+    # def clean_tags(self):
+    #     clean_tag = list(self.cleaned_data['tags'])
+    #     if self.initial['tags'] != clean_tag:
+    #         TagAddingHistory.objects.create(
+    #             tag=list(self.cleaned_data['tags']),
+    #             project=self.instance,
+    #             time_to_add=timezone.now(),
+    #         )
+    #     return clean_tag
 
 
 class TagForm(forms.ModelForm):
