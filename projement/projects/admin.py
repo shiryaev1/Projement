@@ -2,7 +2,6 @@ from django import forms
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 
-from projects.forms import TagChangeListForm
 from projects.models import Company, Project, Tag, TagAddingHistory, HistoryOfChanges, \
     InitialDataOfProject
 

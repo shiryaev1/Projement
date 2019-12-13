@@ -147,9 +147,9 @@ class HistoryOfChanges(models.Model):
 
 
 class InitialDataOfProject(models.Model):
-    initial_actual_design = models.DecimalField(max_digits=7, decimal_places=2)
-    initial_actual_development = models.DecimalField(max_digits=7, decimal_places=2)
-    initial_actual_testing = models.DecimalField(max_digits=7, decimal_places=2)
+    initial_actual_design = models.DecimalField(max_digits=7, decimal_places=2, default=0)
+    initial_actual_development = models.DecimalField(max_digits=7, decimal_places=2, default=0)
+    initial_actual_testing = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):

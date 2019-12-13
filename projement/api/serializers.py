@@ -7,7 +7,7 @@ from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 from projects.models import Project, Company, HistoryOfChanges, \
-    InitialDataOfProject
+    InitialDataOfProject, Tag, TagAddingHistory
 
 
 class DashboardListSerializer(ModelSerializer):
@@ -132,10 +132,15 @@ class ProjectCreateSerializer(ModelSerializer):
     def save(self, **kwargs):
         project = super(ProjectCreateSerializer, self).save(**kwargs)
         InitialDataOfProject.objects.get_or_create(
-            initial_actual_design=self.validated_data.get('actual_design'),
-            initial_actual_development=self.validated_data.get('actual_development'),
-            initial_actual_testing=self.validated_data.get('actual_testing'),
+            initial_actual_design=self.data['actual_design'],
+            initial_actual_development=self.data['actual_development'],
+            initial_actual_testing=self.data['actual_testing'],
             project=project
+        )
+        TagAddingHistory.objects.get_or_create(
+            tag=self.validated_data.get('tags'),
+            project=project,
+            time_to_add=timezone.now()
         )
         return project
 
@@ -166,3 +171,10 @@ class HistoryOfChangesDetailSerializer(ModelSerializer):
             'change_delta_actual_testing',
             'resulting_actual_testing',
         ]
+
+
+class TagSerializer(ModelSerializer):
+
+    class Meta:
+        model = Tag
+        fields = '__all__'

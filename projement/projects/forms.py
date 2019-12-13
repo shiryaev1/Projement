@@ -10,17 +10,6 @@ from django.utils.safestring import mark_safe
 from projects.models import Project, Tag, TagAddingHistory
 
 
-class TagChangeListForm(forms.CheckboxSelectMultiple):
-    def __init__(self, attrs=None, ul_attrs=None):
-        self.ul_attrs = ul_attrs
-        super(TagChangeListForm, self).__init__(attrs)
-
-    def render(self, name, value, attrs=None, choices=()):
-        html = super(TagChangeListForm, self).render(name, value, attrs, choices)
-        final_attrs = self.build_attrs(self.ul_attrs)
-        return mark_safe(html.replace('<ul>','<ul%s>' % flatatt(final_attrs)))
-
-
 class ProjectCreateForm(forms.ModelForm):
     class Meta:
         model = Project
