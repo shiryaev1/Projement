@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.core.validators import MinValueValidator, MaxValueValidator
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
@@ -29,17 +30,31 @@ class ProjectUpdateSerializer(ModelSerializer):
                                                       decimal_places=2,
                                                       write_only=True,
                                                       required=False,
-                                                      default=0)
+                                                      default=0,
+                                                      validators=[
+                                                          MinValueValidator(0),
+                                                          MaxValueValidator(9999)
+                                                      ])
     additional_hour_development = serializers.DecimalField(max_digits=7,
                                                            decimal_places=2,
                                                            write_only=True,
                                                            required=False,
-                                                           default=0)
+                                                           default=0,
+                                                           validators=[
+                                                               MinValueValidator(0),
+                                                               MaxValueValidator(9999)
+                                                           ]
+                                                           )
     additional_hour_testing = serializers.DecimalField(max_digits=7,
                                                        decimal_places=2,
                                                        write_only=True,
                                                        required=False,
-                                                       default=0)
+                                                       default=0,
+                                                       validators=[
+                                                           MinValueValidator(0),
+                                                           MaxValueValidator(9999)
+                                                       ]
+                                                       )
 
     class Meta:
         model = Project
