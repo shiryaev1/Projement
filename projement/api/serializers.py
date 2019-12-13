@@ -167,11 +167,20 @@ class HistoryOfChangesSerializer(ModelSerializer):
         return obj.owner.username
 
 
+class InitialDataOfProjectSerializer(ModelSerializer):
+
+    class Meta:
+        model = InitialDataOfProject
+        fields = '__all__'
+
+
 class HistoryOfChangesDetailSerializer(ModelSerializer):
+    initial = serializers.URLField(source='get_initial_data_url', )
 
     class Meta:
         model = HistoryOfChanges
         fields = [
+            'initial',
             'change_delta_actual_design',
             'resulting_actual_design',
             'change_delta_actual_development',
@@ -186,3 +195,13 @@ class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = '__all__'
+
+
+class TagAddingHistorySerializer(ModelSerializer):
+
+    class Meta:
+        model = TagAddingHistory
+        fields = '__all__'
+
+
+

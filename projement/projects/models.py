@@ -142,6 +142,9 @@ class HistoryOfChanges(models.Model):
     def get_api_absolute_url(self):
         return reverse('api:project-history-detail', kwargs={'pk': self.project.pk, 'id': self.id})
 
+    def get_initial_data_url(self):
+        return reverse('api:project-initial-data', kwargs={'id': self.project.id})
+
     def get_absolute_url(self):
         return reverse('history-of-changes-detail', kwargs={'pk': self.pk, 'id': self.project.id})
 
@@ -150,7 +153,11 @@ class InitialDataOfProject(models.Model):
     initial_actual_design = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     initial_actual_development = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     initial_actual_testing = models.DecimalField(max_digits=7, decimal_places=2, default=0)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='initial', on_delete=models.CASCADE)
+
+    # def get_initial_data_url(self):
+    #     return reverse('api:project-initial-data',
+    #                    kwargs={'id': self.project.id})
 
     def __str__(self):
         return f'Initial data {self.project} project.'

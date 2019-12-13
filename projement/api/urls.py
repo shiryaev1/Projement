@@ -2,7 +2,8 @@ from django.urls import path, re_path
 
 from api.views import DashboardViewSet, ProjectUpdateView, CompanyCreateView, \
     ProjectCreateView, HistoryOfChangesListView, HistoryOfChangesDetailListView, \
-    TagCreateView, TagUpdateView, TagDeleteView
+    TagCreateView, TagUpdateView, TagDeleteView, TagAddingHistoryView, \
+    # InitialDataOfProjectView
 
 app_name = 'api'
 
@@ -13,6 +14,8 @@ urlpatterns = [
     path('project/create/', ProjectCreateView.as_view(), name='project-create'),
     re_path('^project/(?P<id>[0-9]+)/update/$', ProjectUpdateView.as_view(),
             name='project-update'),
+    # re_path('^project/(?P<id>[0-9]+)/initial-data/$',
+    #         InitialDataOfProjectView.as_view(), name='project-initial-data'),
     path('project/history/', HistoryOfChangesListView.as_view(),
          name='project-history'),
     re_path('^project/(?P<pk>[0-9]+)/history/(?P<id>[0-9]+)/$',
@@ -23,4 +26,5 @@ urlpatterns = [
             name='tag-update'),
     re_path('^tag/(?P<id>[0-9]+)/delete/$', TagDeleteView.as_view(),
             name='tag-delete'),
+    path('tags/history/', TagAddingHistoryView.as_view(), name='tags-history')
 ]

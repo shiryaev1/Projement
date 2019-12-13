@@ -8,8 +8,10 @@ from rest_framework.generics import UpdateAPIView, RetrieveUpdateAPIView, \
 from api.permissions import IsReadOnly
 from api.serializers import DashboardListSerializer, ProjectUpdateSerializer, \
     CompanyCreateSerializer, ProjectCreateSerializer, \
-    HistoryOfChangesSerializer, HistoryOfChangesDetailSerializer, TagSerializer
-from projects.models import Project, HistoryOfChanges, Tag
+    HistoryOfChangesSerializer, HistoryOfChangesDetailSerializer, TagSerializer, \
+    TagAddingHistorySerializer, InitialDataOfProjectSerializer
+from projects.models import Project, HistoryOfChanges, Tag, TagAddingHistory, \
+    InitialDataOfProject
 
 
 class DashboardViewSet(viewsets.ModelViewSet):
@@ -79,3 +81,20 @@ class TagDeleteView(DestroyAPIView):
             id=self.kwargs['id']
         )
         return queryset
+
+
+class TagAddingHistoryView(ListAPIView):
+    serializer_class = TagAddingHistorySerializer
+    queryset = TagAddingHistory.objects.all()
+
+#
+# class InitialDataOfProjectView(RetrieveAPIView):
+#     serializer_class = InitialDataOfProjectSerializer
+#     lookup_field = 'id'
+#     queryset = InitialDataOfProject.objects.all()
+
+    # def get_queryset(self):
+    #     queryset = InitialDataOfProject.objects.filter(
+    #         project__id=self.kwargs['id']
+    #     )
+    #     return queryset
