@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     'django_filters',
     'django_pdb',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
 
     'projects',
     'api',

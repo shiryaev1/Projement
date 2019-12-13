@@ -1,12 +1,8 @@
-import pdb
 from django.contrib.auth.models import User
-from django.db.models import F
-from django.shortcuts import get_object_or_404
 from django.test import Client, TestCase
 from django.urls import reverse
-from django.utils.text import slugify
 
-from projects.models import Project, Tag, HistoryOfChanges, Company
+from projects.models import Project, Tag, Company
 
 
 def create_company():
