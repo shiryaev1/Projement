@@ -147,6 +147,8 @@ class ProjectCreateSerializer(ModelSerializer):
 
 class HistoryOfChangesSerializer(ModelSerializer):
     view_changes = serializers.URLField(source='get_api_absolute_url', )
+    project = SerializerMethodField()
+    owner = SerializerMethodField()
 
     class Meta:
         model = HistoryOfChanges
@@ -157,6 +159,12 @@ class HistoryOfChangesSerializer(ModelSerializer):
             'view_changes',
         ]
         read_only_fields = ['change_time', 'project', 'owner', ]
+
+    def get_project(self, obj):
+        return obj.project.title
+
+    def get_owner(self, obj):
+        return obj.owner.username
 
 
 class HistoryOfChangesDetailSerializer(ModelSerializer):

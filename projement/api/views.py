@@ -1,4 +1,5 @@
 from django.db.models import F
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.generics import UpdateAPIView, RetrieveUpdateAPIView, \
     get_object_or_404, CreateAPIView, ListAPIView, RetrieveAPIView, \
@@ -38,6 +39,8 @@ class ProjectCreateView(CreateAPIView):
 class HistoryOfChangesListView(ListAPIView):
     serializer_class = HistoryOfChangesSerializer
     queryset = HistoryOfChanges.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['project__title', ]
 
 
 class HistoryOfChangesDetailListView(RetrieveAPIView):
