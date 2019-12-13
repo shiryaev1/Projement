@@ -40,7 +40,7 @@ class ProjectCreateView(CreateAPIView):
 
 class HistoryOfChangesListView(ListAPIView):
     serializer_class = HistoryOfChangesSerializer
-    queryset = HistoryOfChanges.objects.all()
+    queryset = HistoryOfChanges.objects.order_by('-id')
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['project__title', ]
 
@@ -87,14 +87,13 @@ class TagAddingHistoryView(ListAPIView):
     serializer_class = TagAddingHistorySerializer
     queryset = TagAddingHistory.objects.all()
 
-#
-# class InitialDataOfProjectView(RetrieveAPIView):
-#     serializer_class = InitialDataOfProjectSerializer
-#     lookup_field = 'id'
-#     queryset = InitialDataOfProject.objects.all()
 
-    # def get_queryset(self):
-    #     queryset = InitialDataOfProject.objects.filter(
-    #         project__id=self.kwargs['id']
-    #     )
-    #     return queryset
+class InitialDataOfProjectView(viewsets.ModelViewSet):
+    serializer_class = InitialDataOfProjectSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        queryset = InitialDataOfProject.objects.filter(
+            project__id=self.kwargs['id']
+        )
+        return queryset

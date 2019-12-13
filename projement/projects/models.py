@@ -153,7 +153,7 @@ class InitialDataOfProject(models.Model):
     initial_actual_design = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     initial_actual_development = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     initial_actual_testing = models.DecimalField(max_digits=7, decimal_places=2, default=0)
-    project = models.ForeignKey(Project, related_name='initial', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     # def get_initial_data_url(self):
     #     return reverse('api:project-initial-data',

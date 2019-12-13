@@ -168,19 +168,28 @@ class HistoryOfChangesSerializer(ModelSerializer):
 
 
 class InitialDataOfProjectSerializer(ModelSerializer):
+    project = SerializerMethodField()
 
     class Meta:
         model = InitialDataOfProject
-        fields = '__all__'
+        fields = [
+            'initial_actual_design',
+            'initial_actual_development',
+            'initial_actual_testing',
+            'project',
+        ]
+
+    def get_project(self, obj):
+        return obj.project.title
 
 
 class HistoryOfChangesDetailSerializer(ModelSerializer):
-    initial = serializers.URLField(source='get_initial_data_url', )
+    initial_data = serializers.URLField(source='get_initial_data_url', )
 
     class Meta:
         model = HistoryOfChanges
         fields = [
-            'initial',
+            'initial_data',
             'change_delta_actual_design',
             'resulting_actual_design',
             'change_delta_actual_development',
