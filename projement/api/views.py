@@ -1,10 +1,11 @@
 from django.db.models import F
 from rest_framework import viewsets
 from rest_framework.generics import UpdateAPIView, RetrieveUpdateAPIView, \
-    get_object_or_404
+    get_object_or_404, CreateAPIView
 
 from api.permissions import IsReadOnly
-from api.serializers import DashboardListSerializer, ProjectUpdateSerializer
+from api.serializers import DashboardListSerializer, ProjectUpdateSerializer, \
+    CompanyCreateSerializer, ProjectCreateSerializer
 from projects.models import Project
 
 
@@ -23,5 +24,10 @@ class ProjectUpdateView(RetrieveUpdateAPIView):
         pk = self.kwargs["id"]
         return get_object_or_404(Project, id=pk)
 
-    # def update(self, request, *args, **kwargs):
 
+class CompanyCreateView(CreateAPIView):
+    serializer_class = CompanyCreateSerializer
+
+
+class ProjectCreateView(CreateAPIView):
+    serializer_class = ProjectCreateSerializer

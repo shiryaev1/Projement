@@ -4,10 +4,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from projects.models import Project
+from projects.models import Project, Company
 
 
 class DashboardListSerializer(ModelSerializer):
+    url = serializers.URLField(source='get_api_absolute_url', )
 
     estimated = serializers.DecimalField(max_digits=7, decimal_places=2,
                                          source='total_estimated_hours')
@@ -17,11 +18,19 @@ class DashboardListSerializer(ModelSerializer):
     class Meta:
         model = Project
         fields = [
+            'url',
             'title',
             'company',
             'estimated',
             'actual',
         ]
+
+
+class CompanyCreateSerializer(ModelSerializer):
+
+    class Meta:
+        model = Company
+        fields = '__all__'
 
 
 class ProjectUpdateSerializer(ModelSerializer):
@@ -79,3 +88,11 @@ class ProjectUpdateSerializer(ModelSerializer):
         instance.save()
 
         return instance
+
+
+class ProjectCreateSerializer(ModelSerializer):
+
+    class Meta:
+        model = Project
+        fields = '__all__'
+

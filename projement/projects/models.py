@@ -75,6 +75,9 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
+    def get_api_absolute_url(self):
+        return reverse('api:project-update', kwargs={'id': self.id})
+
     def get_absolute_url(self):
         return reverse('project-update', kwargs={'pk': self.pk, 'slug': slugify(self.title)})
 
