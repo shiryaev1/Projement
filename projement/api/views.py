@@ -1,12 +1,13 @@
 from django.db.models import F
 from rest_framework import viewsets
 from rest_framework.generics import UpdateAPIView, RetrieveUpdateAPIView, \
-    get_object_or_404, CreateAPIView
+    get_object_or_404, CreateAPIView, ListAPIView, RetrieveAPIView
 
 from api.permissions import IsReadOnly
 from api.serializers import DashboardListSerializer, ProjectUpdateSerializer, \
-    CompanyCreateSerializer, ProjectCreateSerializer
-from projects.models import Project
+    CompanyCreateSerializer, ProjectCreateSerializer, \
+    HistoryOfChangesSerializer, HistoryOfChangesDetailSerializer
+from projects.models import Project, HistoryOfChanges
 
 
 class DashboardViewSet(viewsets.ModelViewSet):
@@ -31,3 +32,19 @@ class CompanyCreateView(CreateAPIView):
 
 class ProjectCreateView(CreateAPIView):
     serializer_class = ProjectCreateSerializer
+
+
+class HistoryOfChangesListView(ListAPIView):
+    serializer_class = HistoryOfChangesSerializer
+    queryset = HistoryOfChanges.objects.all()
+
+
+class HistoryOfChangesDetailListView(RetrieveAPIView):
+    serializer_class = HistoryOfChangesDetailSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        queryset = HistoryOfChanges.objects.filter(
+            id=self.kwargs['id']
+        )
+        return queryset

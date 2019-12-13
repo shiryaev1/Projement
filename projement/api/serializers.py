@@ -138,3 +138,31 @@ class ProjectCreateSerializer(ModelSerializer):
             project=project
         )
         return project
+
+
+class HistoryOfChangesSerializer(ModelSerializer):
+    view_changes = serializers.URLField(source='get_api_absolute_url', )
+
+    class Meta:
+        model = HistoryOfChanges
+        fields = [
+            'change_time',
+            'project',
+            'owner',
+            'view_changes',
+        ]
+        read_only_fields = ['change_time', 'project', 'owner', ]
+
+
+class HistoryOfChangesDetailSerializer(ModelSerializer):
+
+    class Meta:
+        model = HistoryOfChanges
+        fields = [
+            'change_delta_actual_design',
+            'resulting_actual_design',
+            'change_delta_actual_development',
+            'resulting_actual_development',
+            'change_delta_actual_testing',
+            'resulting_actual_testing',
+        ]
