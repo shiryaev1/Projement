@@ -22,7 +22,7 @@ urlpatterns = [
             HistoryOfChangesDetailListView.as_view(),
             name='project-history-detail'),
     path('tag/create/',  TagCreateView.as_view(), name='tag-create'),
-    re_path('^tag/(?P<id>[0-9]+)/update/$', TagUpdateView.as_view(),
+    re_path('^tag/(?P<pk>[0-9]+)/update/$', TagUpdateView.as_view(),
             name='tag-update'),
     re_path('^tag/(?P<id>[0-9]+)/delete/$', TagDeleteView.as_view(),
             name='tag-delete'),

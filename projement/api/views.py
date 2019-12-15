@@ -41,9 +41,10 @@ class CompanyCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class ProjectCreateView(CreateAPIView):
+class ProjectCreateView(ListCreateAPIView):
     serializer_class = ProjectCreateSerializer
     permission_classes = [IsAuthenticated]
+    queryset = Project.objects.all()
 
 
 class HistoryOfChangesListView(ListAPIView):
