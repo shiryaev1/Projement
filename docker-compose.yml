@@ -8,11 +8,13 @@ services:
       - POSTGRES_USER=proj_owner
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=projement
+    volumes:
+      - .:/src
   web:
     build: .
     ports:
-      - "8000:8000"
-    command: python projement/manage.py runserver 0.0.0.0:8000
+      - "8080:8080"
+    command: bash entrypoint.sh
 
     depends_on:
       - db

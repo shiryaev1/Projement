@@ -13,7 +13,7 @@ SECRET_KEY = 'pu10i_p%efuvr*cyys_f(g%4xlr1$c*-6dvl^!*@bsywku_b&b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 # Application definition
 
@@ -79,7 +79,7 @@ DATABASES = {
         'NAME': 'projement',
         'USER': 'proj_owner',
         'PASSWORD': 'password',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
