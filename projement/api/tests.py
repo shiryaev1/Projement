@@ -12,13 +12,6 @@ def create_company():
     return company
 
 
-# def create_tag():
-#     tag = Tag.objects.create(
-#         title='python'
-#     )
-#     return tag
-
-
 class DashboardTestCase(TestCase):
 
     fixtures = ['initial.json']
