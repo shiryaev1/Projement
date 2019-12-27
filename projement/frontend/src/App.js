@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ProjectCreate from "./projects/CreateProject";
+import cookie from 'react-cookies';
 
 class App extends Component {
   state = {
@@ -19,6 +21,7 @@ class App extends Component {
   }
 
   render() {
+    const csrfToken = cookie.load('csrftoken');
     return (
         <div className="table-responsive">
           <table className="table table-bordered table-striped table-hover">
@@ -41,6 +44,11 @@ class App extends Component {
         ))}
          </tbody>
         </table>
+          {(csrfToken !== undefined && csrfToken !== null) ?
+      <div style={{width: "500px"}} className='my-5'>
+        <ProjectCreate />
+      </div>
+        : ""}
       </div>
     );
   }

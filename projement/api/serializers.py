@@ -12,7 +12,7 @@ from projects.models import Project, Company, HistoryOfChanges, \
 
 class DashboardListSerializer(ModelSerializer):
     url = serializers.URLField(source='get_api_absolute_url', )
-    company = SerializerMethodField()
+    # company = SerializerMethodField()
     estimated = serializers.DecimalField(max_digits=7, decimal_places=2,
                                          source='total_estimated_hours')
     actual = serializers.DecimalField(max_digits=7, decimal_places=2,
@@ -28,8 +28,8 @@ class DashboardListSerializer(ModelSerializer):
             'actual',
         ]
 
-    def get_company(self, obj):
-        return obj.company.name
+    # def get_company(self, obj):
+    #     return obj.company.name
 
 
 class CompanyCreateSerializer(ModelSerializer):
