@@ -23,13 +23,13 @@ class DashboardViewSet(viewsets.ModelViewSet):
     serializer_class = DashboardListSerializer
     queryset = Project.objects.order_by(
             F('end_date').desc(nulls_first=True))
-    permission_classes = [IsReadOnly, IsAuthenticated]
+    # permission_classes = [IsReadOnly, IsAuthenticated]
 
 
 class ProjectUpdateView(RetrieveUpdateAPIView):
     serializer_class = ProjectUpdateSerializer
     lookup_field = 'id'
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_object(self):
         pk = self.kwargs["id"]
@@ -38,12 +38,12 @@ class ProjectUpdateView(RetrieveUpdateAPIView):
 
 class CompanyCreateView(CreateAPIView):
     serializer_class = CompanyCreateSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
 
 class ProjectCreateView(ListCreateAPIView):
     serializer_class = ProjectCreateSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = Project.objects.all()
 
 
@@ -52,13 +52,13 @@ class HistoryOfChangesListView(ListAPIView):
     queryset = HistoryOfChanges.objects.order_by('-id')
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['project__title', ]
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
 
 class HistoryOfChangesDetailListView(RetrieveAPIView):
     serializer_class = HistoryOfChangesDetailSerializer
     lookup_field = 'id'
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = HistoryOfChanges.objects.filter(
@@ -70,13 +70,13 @@ class HistoryOfChangesDetailListView(RetrieveAPIView):
 class TagCreateView(ListCreateAPIView):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
 
 class TagUpdateView(RetrieveUpdateAPIView):
     serializer_class = TagSerializer
     lookup_field = 'id'
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Tag.objects.filter(
@@ -88,7 +88,7 @@ class TagUpdateView(RetrieveUpdateAPIView):
 class TagDeleteView(DestroyAPIView):
     serializer_class = TagSerializer
     lookup_field = 'id'
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Tag.objects.filter(

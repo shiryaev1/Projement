@@ -32,12 +32,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
+    'corsheaders',
 
     'projects',
     'api',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,6 +50,10 @@ MIDDLEWARE = [
     'projects.get_request.RequestMiddleware',
     'django_pdb.middleware.PdbMiddleware',
 ]
+
+# CORS_ORIGIN_WHITELIST = (
+#     'localhost:3000/'
+# )
 
 ROOT_URLCONF = 'projement.urls'
 
@@ -139,3 +145,5 @@ STATIC_URL = '/static/'
 # http://django-crispy-forms.readthedocs.io/
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$'
