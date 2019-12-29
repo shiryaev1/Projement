@@ -28,7 +28,7 @@ class ActualCompanyListFilter(admin.SimpleListFilter):
 class ProjectAdmin(admin.ModelAdmin):
     inlines = (TagInline,)
     list_display = ('title', 'company', 'start_date', 'end_date', )
-    list_filter = ('company__name',  ActualCompanyListFilter,)
+    # list_filter = ('company__name',  ActualCompanyListFilter,)
     ordering = ('-start_date', )
 
     fieldsets = (

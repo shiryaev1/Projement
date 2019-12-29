@@ -23,7 +23,7 @@ class Company(models.Model):
 
 class Project(models.Model):
     company = models.ForeignKey('projects.Company', on_delete=models.PROTECT,
-                                related_name='projects', blank=True, null=True)
+                                related_name='projects')
     title = models.CharField('Project title', max_length=128)
     start_date = models.DateField('Project start date', blank=True, null=True)
     end_date = models.DateField('Project end date', blank=True, null=True)

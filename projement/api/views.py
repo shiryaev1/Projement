@@ -16,7 +16,7 @@ from api.serializers import DashboardListSerializer, ProjectUpdateSerializer, \
     HistoryOfChangesSerializer, HistoryOfChangesDetailSerializer, TagSerializer, \
     TagAddingHistorySerializer, InitialDataOfProjectSerializer
 from projects.models import Project, HistoryOfChanges, Tag, TagAddingHistory, \
-    InitialDataOfProject
+    InitialDataOfProject, Company
 
 
 class DashboardViewSet(viewsets.ModelViewSet):
@@ -36,8 +36,9 @@ class ProjectUpdateView(RetrieveUpdateAPIView):
         return get_object_or_404(Project, id=pk)
 
 
-class CompanyCreateView(CreateAPIView):
+class CompanyCreateView(ListCreateAPIView):
     serializer_class = CompanyCreateSerializer
+    queryset = Company.objects.all()
     # permission_classes = [IsAuthenticated]
 
 

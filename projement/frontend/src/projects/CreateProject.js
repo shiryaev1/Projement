@@ -4,6 +4,9 @@ import React, { Component } from 'react';
 import 'whatwg-fetch';
 
 class ProjectCreate extends Component {
+    // data = {
+    //     companies: []
+    // };
     constructor(props) {
         super(props);
         this.state = {
@@ -16,7 +19,10 @@ class ProjectCreate extends Component {
             "actual_development": null,
             "estimated_testing": null,
             "actual_testing": null,
+            "company": null,
+            companies: []
         };
+        console.log(this.state);
     }
     changeHandler = e => {
       this.setState({[e.target.name]: e.target.value})
@@ -35,6 +41,8 @@ class ProjectCreate extends Component {
         }).then((result)=>{
             result.json().then((resp)=>{
               console.warn('resp', resp)
+            }).catch(function (error) {
+                console.log(error);
             })
         })
 };
@@ -99,22 +107,38 @@ class ProjectCreate extends Component {
   //
   //       })
   //   }
+    async componentDidMount() {
+    try {
+      const result = await fetch('http://127.0.0.1:8000/api/company/create/');
+      const companies = await result.json();
+      console.log(companies);
+      this.setState({
+        companies
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
     render() {
-        // const {
-        //         title,
-        //         start_date,
-        //         end_date,
-        //         estimated_design,
-        //         actual_design,
-        //         estimated_development,
-        //         actual_development,
-        //         estimated_testing,
-        //         actual_testing,
-        //     } = this.state;
+
         return (
 
             <form onSubmit={this.handleSubmit}>
+                <div className='form-group'>
+                    <label>Project company</label>
+                {/*    <input type='text' id='company' name='company'*/}
+                {/*           className='form-control' placeholder='company'  onChange={this.changeHandler} required='required'/>*/}
+                {/*</div>*/}
+                    <select name="company" className="select form-control"
+                           id="company"  onChange={this.changeHandler} required='required'>
+                        <option value="" selected="">---------</option>
+                        {this.state.companies.map(item => (
+                            <option value={item.id}>{item.name}</option>
+                        ))}
+
+                    </select>
+                </div>
 
                 <div className='form-group'>
                     <label>Project title</label>
