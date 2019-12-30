@@ -7,6 +7,7 @@ import Tag from "./tags/TagsList";
 import TagCreate from "./tags/CreateTag";
 import Navbar from "./components/Navbar";
 import Login from "./accounts/Login";
+import HistoryOfChanges from "./projects/HistoryOfChanges";
 
 class App extends Component {
   render() {
@@ -18,6 +19,7 @@ class App extends Component {
               <Route path='/login' component={Login} />
               <Route path='/dashboard' component={Dashboard} />
               <Route path='/project/create' component={ProjectCreate} />
+              <Route path='/project/history' component={HistoryOfChanges} />
               <Route path='/tags' component={Tag}/>
               <Route path='/tag/create' component={TagCreate}/>
             </div>
