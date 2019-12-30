@@ -107,7 +107,7 @@ class TagAddingHistoryView(ListAPIView):
 class InitialDataOfProjectView(viewsets.ModelViewSet):
     serializer_class = InitialDataOfProjectSerializer
     lookup_field = 'id'
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = InitialDataOfProject.objects.filter(

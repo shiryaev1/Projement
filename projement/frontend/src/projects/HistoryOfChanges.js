@@ -19,6 +19,7 @@ class HistoryOfChanges extends Component {
   }
 
   render() {
+
     return (
         <div className="table-responsive">
             <table className="table table-bordered table-striped table-hover">
@@ -38,7 +39,8 @@ class HistoryOfChanges extends Component {
                         </td>
                         <td>{item.owner}</td>
                         <td>{item.change_time}</td>
-                        <td><a href="">view changes</a></td>
+                        {/*{for item of this.}*/}
+                        <td><a href={`/project/${item.id}/history`}>view changes</a></td>
                     </tr>
                  ))}
                 </tbody>

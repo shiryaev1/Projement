@@ -154,6 +154,8 @@ class HistoryOfChangesSerializer(ModelSerializer):
     class Meta:
         model = HistoryOfChanges
         fields = [
+            'id',
+            'project_id',
             'change_time',
             'project',
             'owner',
@@ -186,10 +188,12 @@ class InitialDataOfProjectSerializer(ModelSerializer):
 
 class HistoryOfChangesDetailSerializer(ModelSerializer):
     initial_data = serializers.URLField(source='get_initial_data_url', )
+    project_id = SerializerMethodField()
 
     class Meta:
         model = HistoryOfChanges
         fields = [
+            'project_id',
             'initial_data',
             'change_delta_actual_design',
             'resulting_actual_design',
@@ -199,6 +203,8 @@ class HistoryOfChangesDetailSerializer(ModelSerializer):
             'resulting_actual_testing',
         ]
 
+    def get_project_id(self, obj):
+        return obj.project.id
 
 class TagSerializer(ModelSerializer):
 

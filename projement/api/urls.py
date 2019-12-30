@@ -18,7 +18,7 @@ urlpatterns = [
             InitialDataOfProjectView.as_view({'get': 'list'}), name='project-initial-data'),
     path('project/history/', HistoryOfChangesListView.as_view(),
          name='project-history'),
-    re_path('^project/(?P<pk>[0-9]+)/history/(?P<id>[0-9]+)/$',
+    re_path('^project/(?P<id>[0-9]+)/history/$',
             HistoryOfChangesDetailListView.as_view(),
             name='project-history-detail'),
     path('tag/create/',  TagCreateView.as_view(), name='tag-create'),

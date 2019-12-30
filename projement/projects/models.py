@@ -140,7 +140,7 @@ class HistoryOfChanges(models.Model):
         return f'Change in {self.project.title} project at {self.change_time}'
 
     def get_api_absolute_url(self):
-        return reverse('api:project-history-detail', kwargs={'pk': self.project.pk, 'id': self.id})
+        return reverse('api:project-history-detail', kwargs={'id': self.id})
 
     def get_initial_data_url(self):
         return reverse('api:project-initial-data', kwargs={'id': self.project.id})

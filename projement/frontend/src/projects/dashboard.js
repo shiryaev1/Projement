@@ -44,6 +44,9 @@ class Dashboard extends Component {
             <a href="/project/create">
                 <input type="button" value="Project create"/>
             </a>
+             <a href="/project/history">
+                <input type="button" value="Project history"/>
+            </a>
           </div>
     );
   }
