@@ -1,57 +1,29 @@
+import './App.css'
 import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Dashboard from "./projects/dashboard";
 import ProjectCreate from "./projects/CreateProject";
-import cookie from 'react-cookies';
+import {BrowserRouter, Route} from "react-router-dom";
+import Tag from "./tags/TagsList";
+import TagCreate from "./tags/CreateTag";
+import Navbar from "./components/Navbar";
+import Login from "./accounts/Login";
 
 class App extends Component {
-  state = {
-    projects: []
-  };
-
-  async componentDidMount() {
-    try {
-      const res = await fetch('http://127.0.0.1:8000/api/dashboard/');
-      const projects = await res.json();
-      this.setState({
-        projects
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   render() {
-    const csrfToken = cookie.load('csrftoken');
     return (
-        <div className="table-responsive">
-          <table className="table table-bordered table-striped table-hover">
-            <thead>
-            <tr>
-              <th width="40%">Project</th>
-              <th width="30%">Company</th>
-              <th width="15%">Estimated</th>
-              <th width="15%">Actual</th>
-            </tr>
-            </thead>
-            <tbody>
-        {this.state.projects.map(item => (
-            <tr>
-              <td>{ item.title }</td>
-              <td>{ item.company }</td>
-              <td>{ item.estimated }</td>
-              <td>{ item.actual }</td>
-            </tr>
-        ))}
-         </tbody>
-        </table>
-          {(csrfToken !== undefined && csrfToken !== null) ?
-      <div style={{width: "500px"}} className='my-5'>
-        <ProjectCreate />
-      </div>
-        : ""}
-      </div>
+        <BrowserRouter>
+            <Navbar/>
+          <div className='app-wrapper'>
+            <div className='app-wrapper-content'>
+              <Route path='/login' component={Login} />
+              <Route path='/dashboard' component={Dashboard} />
+              <Route path='/project/create' component={ProjectCreate} />
+              <Route path='/tags' component={Tag}/>
+              <Route path='/tag/create' component={TagCreate}/>
+            </div>
+          </div>
+        </BrowserRouter>
     );
   }
 }
-
 export default App;

@@ -3,7 +3,7 @@ from django.urls import path, re_path
 from api.views import DashboardViewSet, ProjectUpdateView, CompanyCreateView, \
     ProjectCreateView, HistoryOfChangesListView, HistoryOfChangesDetailListView, \
     TagCreateView, TagUpdateView, TagDeleteView, TagAddingHistoryView, \
-    InitialDataOfProjectView
+    InitialDataOfProjectView, LoginView
 
 app_name = 'api'
 
@@ -26,5 +26,7 @@ urlpatterns = [
             name='tag-update'),
     re_path('^tag/(?P<id>[0-9]+)/delete/$', TagDeleteView.as_view(),
             name='tag-delete'),
-    path('tags/history/', TagAddingHistoryView.as_view(), name='tags-history')
+    path('tags/history/', TagAddingHistoryView.as_view(), name='tags-history'),
+    path('login/', LoginView.as_view(), name='login')
+
 ]

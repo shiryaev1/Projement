@@ -51,10 +51,16 @@ MIDDLEWARE = [
     'django_pdb.middleware.PdbMiddleware',
 ]
 
-# CORS_ORIGIN_WHITELIST = (
-#     'localhost:3000/'
-# )
-
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
 ROOT_URLCONF = 'projement.urls'
 
 TEMPLATES = [

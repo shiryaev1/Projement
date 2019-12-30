@@ -1,12 +1,11 @@
-from django.contrib.auth import authenticate
-from django.contrib.auth.views import login
+from django.contrib.auth import authenticate, login
 from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.generics import RetrieveUpdateAPIView, \
-    get_object_or_404, CreateAPIView, ListAPIView, RetrieveAPIView, \
+    get_object_or_404, ListAPIView, RetrieveAPIView, \
     ListCreateAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,7 +13,8 @@ from api.permissions import IsReadOnly
 from api.serializers import DashboardListSerializer, ProjectUpdateSerializer, \
     CompanyCreateSerializer, ProjectCreateSerializer, \
     HistoryOfChangesSerializer, HistoryOfChangesDetailSerializer, TagSerializer, \
-    TagAddingHistorySerializer, InitialDataOfProjectSerializer
+    TagAddingHistorySerializer, InitialDataOfProjectSerializer, \
+    UserLoginSerializer
 from projects.models import Project, HistoryOfChanges, Tag, TagAddingHistory, \
     InitialDataOfProject, Company
 
@@ -114,3 +114,21 @@ class InitialDataOfProjectView(viewsets.ModelViewSet):
             project__id=self.kwargs['id']
         )
         return queryset
+
+
+class LoginView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = UserLoginSerializer
+
+    @staticmethod
+    def post(request):
+        user = authenticate(
+            username=request.data.get("username"),
+            password=request.data.get("password"),
+        )
+        if user is None or not user.is_active:
+            return Response({
+                'message': 'Username or password incorrect'
+            }, status=status.HTTP_401_UNAUTHORIZED)
+        login(request, user)
+        return Response(UserLoginSerializer(user).data)

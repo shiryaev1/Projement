@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from rest_framework import serializers
@@ -12,7 +13,7 @@ from projects.models import Project, Company, HistoryOfChanges, \
 
 class DashboardListSerializer(ModelSerializer):
     url = serializers.URLField(source='get_api_absolute_url', )
-    # company = SerializerMethodField()
+    company = SerializerMethodField()
     estimated = serializers.DecimalField(max_digits=7, decimal_places=2,
                                          source='total_estimated_hours')
     actual = serializers.DecimalField(max_digits=7, decimal_places=2,
@@ -28,8 +29,8 @@ class DashboardListSerializer(ModelSerializer):
             'actual',
         ]
 
-    # def get_company(self, obj):
-    #     return obj.company.name
+    def get_company(self, obj):
+        return obj.company.name
 
 
 class CompanyCreateSerializer(ModelSerializer):
@@ -211,6 +212,19 @@ class TagAddingHistorySerializer(ModelSerializer):
     class Meta:
         model = TagAddingHistory
         fields = '__all__'
+
+
+class UserLoginSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'password',
+        )
+        extra_kwargs = {
+            "password": {"write_only": True}
+        }
 
 
 
