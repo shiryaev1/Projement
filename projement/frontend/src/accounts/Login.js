@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+
 import 'whatwg-fetch';
 
 class Login extends Component {
@@ -22,8 +23,21 @@ class Login extends Component {
             .post('http://127.0.0.1:8000/api/login/', this.state)
             .then(response => {
                 console.log(response);
+                // this.setState({"token": response.data.token});
+              localStorage.setItem('token', response.data.token);
             })
+
 };
+    componentDidMount() {
+       if (localStorage.token) {
+        console.log('success')
+      }
+       else {
+           this.props.history
+       }
+    }
+
+
 
     render() {
         // if (logged === true)

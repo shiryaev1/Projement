@@ -26,7 +26,11 @@ class Tag extends Component {
     return (
         <div className="table-responsive">
            {this.state.tags.map(item => (
-               <h1>{item.title}</h1>
+
+               <a href={`tag/${item.id}/delete`}><h1>{item.title}</h1>
+                 <a href={`tag/${item.id}/update`}>edit</a>
+               </a>
+
            ))}
 
          </div>

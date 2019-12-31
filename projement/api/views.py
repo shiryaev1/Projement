@@ -1,20 +1,26 @@
-from django.contrib.auth import authenticate, login
+import jwt
+from django.conf import settings
+from django.contrib.auth import authenticate, login, user_logged_in
+from django.contrib.auth.models import User
 from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import RetrieveUpdateAPIView, \
     get_object_or_404, ListAPIView, RetrieveAPIView, \
     ListCreateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_jwt.serializers import jwt_payload_handler
 
 from api.permissions import IsReadOnly
 from api.serializers import DashboardListSerializer, ProjectUpdateSerializer, \
     CompanyCreateSerializer, ProjectCreateSerializer, \
     HistoryOfChangesSerializer, HistoryOfChangesDetailSerializer, TagSerializer, \
     TagAddingHistorySerializer, InitialDataOfProjectSerializer, \
-    UserLoginSerializer
+     LoginSerializer
 from projects.models import Project, HistoryOfChanges, Tag, TagAddingHistory, \
     InitialDataOfProject, Company
 
@@ -116,19 +122,23 @@ class InitialDataOfProjectView(viewsets.ModelViewSet):
         return queryset
 
 
-class LoginView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = UserLoginSerializer
+class CreateUserAPIView(APIView):
+    # Allow any user (authenticated or not) to access this url
+    permission_classes = (AllowAny,)
 
-    @staticmethod
-    def post(request):
-        user = authenticate(
-            username=request.data.get("username"),
-            password=request.data.get("password"),
-        )
-        if user is None or not user.is_active:
-            return Response({
-                'message': 'Username or password incorrect'
-            }, status=status.HTTP_401_UNAUTHORIZED)
+    def post(self, request):
+        user = request.data
+        serializer = UserLoginSerializer(data=user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
         login(request, user)
-        return Response(UserLoginSerializer(user).data)
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=200)

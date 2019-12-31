@@ -1,6 +1,8 @@
 from decimal import Decimal
 
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core import exceptions
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from rest_framework import serializers
@@ -206,6 +208,7 @@ class HistoryOfChangesDetailSerializer(ModelSerializer):
     def get_project_id(self, obj):
         return obj.project.id
 
+
 class TagSerializer(ModelSerializer):
 
     class Meta:
@@ -220,17 +223,32 @@ class TagAddingHistorySerializer(ModelSerializer):
         fields = '__all__'
 
 
-class UserLoginSerializer(ModelSerializer):
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
 
-    class Meta:
-        model = User
-        fields = (
-            'username',
-            'password',
-        )
-        extra_kwargs = {
-            "password": {"write_only": True}
-        }
+    def validate(self, data):
+        username = data.get('username', '')
+        password = data.get('password', '')
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user:
+                if user.is_active:
+                    data['user'] = user
+                else:
+                    message = 'account is deactivated'
+                    raise exceptions.ValidationError(message)
+
+            else:
+                message = 'login with given credentials'
+                raise exceptions.ValidationError(message)
+        else:
+            message = 'error'
+            raise exceptions.ValidationError(message)
+        return data
+
+
 
 
 

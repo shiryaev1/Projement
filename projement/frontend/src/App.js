@@ -10,6 +10,8 @@ import Login from "./accounts/Login";
 import HistoryOfChanges from "./projects/HistoryOfChanges";
 import HistoryOfChangesDetail from "./projects/HistoryOfChangesDetail";
 import InitialDataOfProject from "./projects/InitialDataOfProject";
+import TagDelete from "./tags/TagDelete";
+import TagUpdate from "./tags/TagUpdate";
 
 class App extends Component {
   render() {
@@ -26,6 +28,8 @@ class App extends Component {
               <Route path='/project/:id/initial-data' component={InitialDataOfProject} />
               <Route path='/tags' component={Tag}/>
               <Route path='/tag/create' component={TagCreate}/>
+              <Route path='/tag/:id/delete' component={TagDelete}/>
+              <Route path='/tag/:id/update' component={TagUpdate}/>
             </div>
           </div>
         </BrowserRouter>
