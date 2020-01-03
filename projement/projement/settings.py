@@ -30,9 +30,9 @@ INSTALLED_APPS = [
     'django_filters',
     'django_pdb',
     'rest_framework',
-    'rest_framework.authtoken',
-    'rest_auth',
+    # 'rest_framework.authtoken',
     'corsheaders',
+    'knox',
 
     'projects',
     'api',
@@ -52,19 +52,12 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', )
 }
 
-JWT_AUTH = {
-    'JWT_RESPONSE_PAYLOAD_HANDLER': 'projement.utils.my_jwt_response_handler'
-}
+# JWT_AUTH = {
+#     'JWT_RESPONSE_PAYLOAD_HANDLER': 'projement.utils.my_jwt_response_handler'
+# }
 
 # CORS_ORIGIN_WHITELIST = (
 #     'http://localhost:3000/',

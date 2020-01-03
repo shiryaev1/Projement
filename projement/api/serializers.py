@@ -227,35 +227,39 @@ class TagAddingHistorySerializer(ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username')
+        fields = ('id', 'username', 'email')
 
 
-class LoginSerializer(serializers.Serializer):
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'password')
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+                                        validated_data['username'],
+                                        validated_data['email'],
+                                        validated_data['password']
+                                        )
+        return user
+
+
+class LoginSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
     password = serializers.CharField()
 
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'password',
+        )
+
     def validate(self, data):
-        username = data.get('username', '')
-        password = data.get('password', '')
-
-        if username and password:
-            user = authenticate(username=username, password=password)
-            if user:
-                if user.is_active:
-                    data['user'] = user
-                else:
-                    message = 'account is deactivated'
-                    raise exceptions.ValidationError(message)
-
-            else:
-                message = 'login with given credentials'
-                raise exceptions.ValidationError(message)
-        else:
-            message = 'error'
-            raise exceptions.ValidationError(message)
-        return data
-
-
-
-
-
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError('Incorrect credentials')

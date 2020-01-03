@@ -1,26 +1,21 @@
-import jwt
-from django.conf import settings
-from django.contrib.auth import authenticate, login, user_logged_in
-from django.contrib.auth.models import User
+
 from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, status
-from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import viewsets
+
 from rest_framework.generics import RetrieveUpdateAPIView, \
     get_object_or_404, ListAPIView, RetrieveAPIView, \
-    ListCreateAPIView, DestroyAPIView
+    ListCreateAPIView, DestroyAPIView, GenericAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_jwt.serializers import jwt_payload_handler
+from knox.models import AuthToken
 
 from api.permissions import IsReadOnly
 from api.serializers import DashboardListSerializer, ProjectUpdateSerializer, \
     CompanyCreateSerializer, ProjectCreateSerializer, \
     HistoryOfChangesSerializer, HistoryOfChangesDetailSerializer, TagSerializer, \
     TagAddingHistorySerializer, InitialDataOfProjectSerializer, \
-    LoginSerializer, UserSerializer
+    UserSerializer, RegisterSerializer, LoginSerializer
 from projects.models import Project, HistoryOfChanges, Tag, TagAddingHistory, \
     InitialDataOfProject, Company
 
@@ -122,19 +117,37 @@ class InitialDataOfProjectView(viewsets.ModelViewSet):
         return queryset
 
 
+class RegisterAPI(GenericAPIView):
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user": UserSerializer(user,
+                                   context=self.get_serializer_context()).data,
+            "token": AuthToken.objects.create(user)[1]
+        })
+
+
+class LoginAPI(GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        return Response({
+          "user": UserSerializer(user,
+                                 context=self.get_serializer_context()).data,
+          "token": AuthToken.objects.create(user)[1]
+        })
+
+
 class UserAPI(RetrieveAPIView):
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
     def get_object(self):
         return self.request.user
-
-
-class LoginView(APIView):
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key}, status=200)
