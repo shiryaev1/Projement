@@ -61,6 +61,17 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
+
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'projement.utils.my_jwt_response_handler'
+}
+
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:3000/',
+#     'http://localhost:8000/'
+# )
+
+
 ROOT_URLCONF = 'projement.urls'
 
 TEMPLATES = [

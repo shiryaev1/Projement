@@ -33,7 +33,7 @@ class Dashboard extends Component {
             <tbody>
         {this.state.projects.map(item => (
             <tr>
-              <td>{ item.title }</td>
+              <td><a href={`project/${item.id}/update`}>{ item.title }</a></td>
               <td>{ item.company }</td>
               <td>{ item.estimated }</td>
               <td>{ item.actual }</td>

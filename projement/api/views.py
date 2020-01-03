@@ -20,7 +20,7 @@ from api.serializers import DashboardListSerializer, ProjectUpdateSerializer, \
     CompanyCreateSerializer, ProjectCreateSerializer, \
     HistoryOfChangesSerializer, HistoryOfChangesDetailSerializer, TagSerializer, \
     TagAddingHistorySerializer, InitialDataOfProjectSerializer, \
-     LoginSerializer
+    LoginSerializer, UserSerializer
 from projects.models import Project, HistoryOfChanges, Tag, TagAddingHistory, \
     InitialDataOfProject, Company
 
@@ -122,16 +122,12 @@ class InitialDataOfProjectView(viewsets.ModelViewSet):
         return queryset
 
 
-class CreateUserAPIView(APIView):
-    # Allow any user (authenticated or not) to access this url
-    permission_classes = (AllowAny,)
+class UserAPI(RetrieveAPIView):
+    permission_classes = [IsAuthenticated, ]
+    serializer_class = UserSerializer
 
-    def post(self, request):
-        user = request.data
-        serializer = UserLoginSerializer(data=user)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def get_object(self):
+        return self.request.user
 
 
 class LoginView(APIView):
